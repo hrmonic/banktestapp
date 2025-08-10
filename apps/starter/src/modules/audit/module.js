@@ -2,7 +2,12 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 function AuditHome() {
-  return <div className="p-6">\ud83d\udd0e\uFE0F Audit (stub)</div>;
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Journal d'audit</h1>
+      <p>Cette page affiche les journaux d'audit et les traces des actions effectuées. Les données seront chargées via votre API.</p>
+    </div>
+  );
 }
 
 function AuditRoutes() {
