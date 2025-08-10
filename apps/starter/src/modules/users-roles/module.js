@@ -2,7 +2,12 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 function UsersRolesHome() {
-  return <div className="p-6">\ud83d\udc65 Users & Roles (stub)</div>;
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Utilisateurs et rôles</h1>
+      <p>Cette page permet de gérer les utilisateurs et leurs rôles. Les données seront chargées via votre API.</p>
+    </div>
+  );
 }
 
 function UsersRolesRoutes() {
