@@ -1,32 +1,63 @@
-import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import React, { Suspense, useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { moduleRegistry } from "./modules/registry.js";
 import { AppShell } from "./components/layout/AppShell.jsx";
 import { ErrorBoundary } from "./components/ErrorBoundary.jsx";
 import { LoadingFallback } from "./components/LoadingFallback.jsx";
+import LoginPage from "./pages/LoginPage.jsx";
+import UnauthorizedPage from "./pages/UnauthorizedPage.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
+import { useClientConfig } from "./lib/useClientConfig.js";
+import { RequireAuth } from "./lib/security/rbac.js";
 
-export default function App() {
-  // Initialize module registry without config to load all modules by default
-  moduleRegistry.initialize();
-  const modules = moduleRegistry.getEnabledModules();
+function App() {
+  const { config, isLoading, error } = useClientConfig();
+
+  useEffect(() => {
+    if (config) {
+      moduleRegistry.initialize(config);
+    }
+  }, [config]);
+
+  if (isLoading) {
+    return <LoadingFallback />;
+  }
+
+  if (error) {
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-4">Erreur</h1>
+        <p>Impossible de charger la configuration.</p>
+        <button onClick={() => window.location.reload()}>Réessayer</button>
+      </div>
+    );
+  }
+
+  const modules = config ? moduleRegistry.getEnabledModules(config) : [];
+
   return (
-    <BrowserRouter>
-      <ErrorBoundary>
-        <React.Suspense fallback={<LoadingFallback />}>
-          <Routes>
-            <Route path="/" element={<AppShell />}> 
-              {modules.map((mod) => (
-                <Route
-                  key={mod.id}
-                  path={`${mod.basePath}/*`}
-                  element={<mod.routes />}
-                />
-              ))}
-              <Route index element={<Navigate to={modules[0].basePath} />} />
-            </Route>
-          </Routes>
-        </React.Suspense>
-      </ErrorBoundary>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/unauthorized" element={<UnauthorizedPage />} />
+          <Route path="/" element={<Navigate to={modules[0]?.basePath || '/'} />} />
+          <Route
+            element={
+              <RequireAuth redirectTo="/login">
+                <AppShell />
+              </RequireAuth>
+            }
+          >
+            {modules.map((mod) => (
+              <Route key={mod.id} path={`${mod.basePath}/*`} element={<mod.routes />} />
+            ))}
+          </Route>
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Suspense>
+    </ErrorBoundary>
   );
 }
+
+export default App;
