@@ -300,6 +300,21 @@ Les tests couvrent :
 
 ---
 
+## 📚 Documentation EN / FR
+
+Pour aller plus loin que ce README, la documentation détaillée est disponible en deux langues :
+
+- `docs/en/` : documentation complète en anglais (overview, guides de démarrage, architecture, modules, configuration, sécurité, performance, tests, guide d’intégration entreprise).  
+- `docs/fr/` : même structure en français, alignée fonctionnellement sur la version EN.
+
+Recommandation de lecture :
+
+- commencer par `docs/fr/overview.md` ou `docs/en/overview.md` pour la vision d’ensemble,  
+- enchaîner avec `getting-started.md` puis `architecture.md`,  
+- utiliser les sous-dossiers `modules/`, `configuration/` et le `enterprise-integration-guide.md` comme références pour l’intégration en entreprise.
+
+---
+
 ## 📌 Roadmap
 
 - [x] Modules de base : Dashboard, Transactions, Users & Roles  
@@ -311,7 +326,7 @@ Les tests couvrent :
 - [ ] Mode sombre global  
   → thème dark cohérent sur l’ensemble du backoffice.
 - [ ] Catalogues de thèmes par client  
-  → bibliothèque de thèmes nommés (ex : \"neo-bank\", \"private-banking\") sélectionnables via `client.config.json`.
+  → bibliothèque de thèmes nommés (ex : "neo-bank", "private-banking") sélectionnables via `client.config.json`.
 - [ ] Librairie de graphiques bancaires préconfigurés  
   → composants de charts prêts à l’emploi pour KPIs, risques, liquidité, etc.
 - [ ] Générateurs de modules « template »  
@@ -321,4 +336,7 @@ Les tests couvrent :
 
 ## 📄 Licence
 
-Ce projet est distribué sous licence **MIT**. Voir le fichier `LICENSE` (ou la section licence de votre mono-repo) pour plus de détails.
+Ce projet est distribué sous une licence de type **MIT modifiée** :  
+- usage non-commercial autorisé selon les termes classiques MIT,  
+- **tout usage à but commercial (SaaS, outil interne en production, revente, etc.) nécessite mon autorisation écrite préalable**.  
+Voir le fichier `LICENSE` pour le détail complet.
