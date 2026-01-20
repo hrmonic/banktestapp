@@ -287,15 +287,22 @@ Les tests couvrent :
 
 ---
 
-## 📌 Roadmap (exemple)
+## 📌 Roadmap
 
-- [x] Modules de base : Dashboard, Transactions, Users & Roles.
-- [x] Audit module optionnel.
-- [x] Packaging du UI en `@bank/ui`.
-- [ ] Mode sombre global.
-- [ ] Catalogues de thèmes par client.
-- [ ] Lib de graphiques bancaires préconfigurés (performance, risques, etc.).
-- [ ] Générateurs de modules « template » pour accélérer les nouvelles features.
+- [x] Modules de base : Dashboard, Transactions, Users & Roles  
+  → socle fonctionnel pour un backoffice bancaire standard.
+- [x] Module Audit optionnel  
+  → suivi des actions sensibles et journalisation.
+- [x] Packaging du UI en `@bank/ui`  
+  → design system réutilisable dans d’autres projets.
+- [ ] Mode sombre global  
+  → thème dark cohérent sur l’ensemble du backoffice.
+- [ ] Catalogues de thèmes par client  
+  → bibliothèque de thèmes nommés (ex : \"neo-bank\", \"private-banking\") sélectionnables via `client.config.json`.
+- [ ] Librairie de graphiques bancaires préconfigurés  
+  → composants de charts prêts à l’emploi pour KPIs, risques, liquidité, etc.
+- [ ] Générateurs de modules « template »  
+  → scripts ou blueprints pour créer un nouveau module métier complet (routes, navigation, contrat d’API) en quelques commandes.
 
 ---
 
