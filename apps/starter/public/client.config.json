@@ -1,0 +1,25 @@
+{
+  "branding": {
+    "name": "Ma Banque",
+    "logo": "/logo.svg",
+    "primaryColor": "#4e0aaf"
+  },
+  "modules": {
+    "dashboard": { "enabled": true },
+    "accounts": { "enabled": true },
+    "transactions": { "enabled": true },
+    "approvals": { "enabled": false },
+    "users-roles": { "enabled": false },
+    "reports": { "enabled": false },
+    "audit": { "enabled": false }
+  },
+  "api": {
+    "baseUrl": "https://api.mabanque.com",
+    "timeout": 8000
+  },
+  "auth": {
+    "type": "oidc",
+    "issuer": "https://auth.mabanque.com",
+    "clientId": "backoffice-app"
+  }
+}
