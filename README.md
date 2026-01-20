@@ -16,7 +16,20 @@
 
 ---
 
-## 📖 À propos
+## 📖 About (English overview)
+
+**Modular BankUI Studio** is a front-end only, modular backoffice UI for banking use cases.
+
+- **100% front-end** – no backend in this repo, you plug in your own APIs.
+- **Modular** – enable/disable modules (dashboard, transactions, audit, users & roles, etc.).
+- **Brandable** – per-client theming (logo, palette, design tokens).
+- **Enterprise-ready focus** – RBAC, audit, performance, accessibility (WCAG 2.1 AA).
+
+This project is designed as a **portfolio-grade showcase**: clean architecture, clear separation of concerns, tests, and documentation that make it easy to review the code.
+
+---
+
+## 📖 À propos (FR)
 
 **Modular BankUI Studio** est une suite front-end prête à l’emploi pour construire des interfaces internes bancaires (back-office, middle-office, outils de contrôle) sans réinventer l’UI à chaque client.
 
@@ -258,18 +271,19 @@ pnpm build
 
 ---
 
-## 🧪 Tests
+## 🧪 Tests & qualité
 
-Selon la configuration du repo :
+Ce repo est configuré avec :
 
-- **Unitaires / intégration** : via Vitest/Jest (scripts `pnpm test`).
-- **E2E** : via Playwright (`pnpm test:e2e`).
-- **Linting & formatage** : ESLint + Prettier (scripts à adapter au besoin).
+- **Vitest + Testing Library** pour les tests unitaires / components (`pnpm test`).
+- **Playwright** pour un smoke test E2E sur le login + accès dashboard (`pnpm test:e2e`).
+- **ESLint + Prettier** pour assurer un style de code cohérent (`pnpm lint`, `pnpm format`).
 
-Objectifs recommandés :
+Les tests couvrent :
 
-- Couverture élevée sur les composants UI critiques (formulaires, workflows d’approbation).
-- Tests de régression sur les modules sensibles (transactions, users & roles).
+- le bootstrap de l’app (`App.jsx`) avec une config client mockée,
+- la logique d’activation des modules dans `moduleRegistry`,
+- un parcours utilisateur minimal (login → dashboard) en E2E.
 
 ---
 

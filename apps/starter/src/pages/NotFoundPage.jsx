@@ -1,10 +1,23 @@
 import React from "react";
+import { Card, Button } from "@bank/ui";
+import { useNavigate } from "react-router-dom";
 
 function NotFoundPage() {
+  const navigate = useNavigate();
+
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Page non trouvée</h1>
-      <p>La page demandée n'existe pas.</p>
+    <div className="flex min-h-[60vh] items-center justify-center">
+      <Card
+        title="Page non trouvée"
+        description="La ressource demandée n’existe pas dans cette démo de backoffice bancaire."
+        className="max-w-lg text-sm text-slate-700"
+      >
+        <p className="mb-4">
+          Vérifiez l’URL ou revenez au tableau de bord principal pour continuer
+          votre navigation.
+        </p>
+        <Button onClick={() => navigate("/")}>Revenir au Dashboard</Button>
+      </Card>
     </div>
   );
 }
