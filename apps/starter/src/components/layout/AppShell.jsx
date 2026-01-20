@@ -1,16 +1,21 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { moduleRegistry } from "../../modules/registry.js";
+import { Link, useLocation, Outlet } from "react-router-dom";
+import { getSidebarItems } from "../../modules/registry.js";
 import { PageLayout } from "@bank/ui";
+import { useEffectivePermissions } from "../../lib/security/rbac.js";
+import { useAuth } from "../../lib/auth/authProvider.js";
 
 /**
  * Shell d'application principal pour le backoffice.
  * - Gère le layout global (sidebar + contenu).
  * - Construit la navigation à partir du moduleRegistry.
  */
-export function AppShell({ children }) {
-  const modules = moduleRegistry.getEnabledModules();
+export function AppShell({ config }) {
+  const permissions = useEffectivePermissions();
+  const items = getSidebarItems(config, permissions);
   const location = useLocation();
+  const { user } = useAuth();
+  const profileLabel = user?.profile || "admin-backoffice";
 
   return (
     <div className="flex min-h-screen bg-slate-50 text-slate-900">
@@ -22,15 +27,18 @@ export function AppShell({ children }) {
           <span className="mt-1 block text-sm font-bold text-slate-900">
             Modular BankUI Studio
           </span>
+          <span className="mt-2 inline-flex rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+            Profil&nbsp;: {profileLabel}
+          </span>
         </div>
         <nav className="flex-1 overflow-y-auto p-3">
           <ul className="space-y-1">
-            {modules.map((mod) => {
-              const isActive = location.pathname.startsWith(mod.basePath);
+            {items.map((item) => {
+              const isActive = location.pathname.startsWith(item.to);
               return (
-                <li key={mod.id}>
+                <li key={item.to}>
                   <Link
-                    to={mod.basePath}
+                    to={item.to}
                     className={[
                       "flex items-center rounded-md px-3 py-2 text-sm transition-colors",
                       isActive
@@ -38,7 +46,7 @@ export function AppShell({ children }) {
                         : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
                     ].join(" ")}
                   >
-                    <span>{mod.name}</span>
+                    <span>{item.label}</span>
                   </Link>
                 </li>
               );
@@ -51,7 +59,9 @@ export function AppShell({ children }) {
       </aside>
 
       <main className="flex-1 overflow-y-auto p-6">
-        <PageLayout>{children}</PageLayout>
+        <PageLayout>
+          <Outlet />
+        </PageLayout>
       </main>
     </div>
   );

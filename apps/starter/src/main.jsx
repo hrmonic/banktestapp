@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.jsx";
 import { AuthProvider } from "@/lib/auth/authProvider.js";
 import { PermissionsProvider } from "@/lib/security/rbac.js";
+import "./index.css";
 
 /**
  * Application entrypoint.

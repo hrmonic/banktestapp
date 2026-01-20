@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Réglages globaux pour l’UI backoffice */
+html,
+body,
+#root {
+  @apply h-full;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
+

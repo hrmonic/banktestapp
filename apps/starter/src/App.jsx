@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { moduleRegistry } from "./modules/registry.js";
+import { getEnabledModules } from "./modules/registry.js";
 import { AppShell } from "./components/layout/AppShell.jsx";
 import { ErrorBoundary } from "./components/ErrorBoundary.jsx";
 import { LoadingFallback } from "./components/LoadingFallback.jsx";
@@ -8,16 +8,10 @@ import LoginPage from "./pages/LoginPage.jsx";
 import UnauthorizedPage from "./pages/UnauthorizedPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 import { useClientConfig } from "./lib/useClientConfig.js";
-import { RequireAuth } from "./lib/security/rbac.js";
+import { RequireAuth, ModuleRouteGuard } from "./lib/security/rbac.js";
 
 function App() {
   const { config, isLoading, error } = useClientConfig();
-
-  useEffect(() => {
-    if (config) {
-      moduleRegistry.initialize(config);
-    }
-  }, [config]);
 
   if (isLoading) {
     return <LoadingFallback />;
@@ -39,7 +33,7 @@ function App() {
     );
   }
 
-  const modules = config ? moduleRegistry.getEnabledModules(config) : [];
+  const modules = config ? getEnabledModules(config) : [];
 
   return (
     <ErrorBoundary>
@@ -54,12 +48,20 @@ function App() {
           <Route
             element={
               <RequireAuth redirectTo="/login">
-                <AppShell />
+                <AppShell config={config} />
               </RequireAuth>
             }
           >
             {modules.map((mod) => (
-              <Route key={mod.id} path={`${mod.basePath}/*`} element={<mod.routes />} />
+              <Route
+                key={mod.id}
+                path={`${mod.basePath}/*`}
+                element={
+                  <ModuleRouteGuard module={mod}>
+                    <mod.routes />
+                  </ModuleRouteGuard>
+                }
+              />
             ))}
           </Route>
           <Route path="*" element={<NotFoundPage />} />

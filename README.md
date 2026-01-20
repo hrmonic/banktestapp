@@ -227,7 +227,7 @@ const customAdapter = {
 
 - **Tokens en mémoire uniquement** (pas de stockage long terme par défaut).
 - **CSP-friendly** : fonctionnement compatible avec des politiques de Content Security Policy strictes.
-- **RBAC** : guards sur routes et composants en fonction des rôles/permissions.
+- **RBAC** : guards sur routes et composants en fonction des rôles/permissions (via `permissionsRequired` sur les modules, `getSidebarItems` pour la navigation et des route guards dédiés).
 - **Pas de PII** dans les logs front par défaut.
 - **Nettoyage du contenu riche** (par ex. via DOMPurify) pour les champs texte riches.
 
@@ -289,14 +289,14 @@ pnpm build
 Ce repo est configuré avec :
 
 - **Vitest + Testing Library** pour les tests unitaires / components (`pnpm test`).
-- **Playwright** pour un smoke test E2E sur le login + accès dashboard (`pnpm test:e2e`).
+- **Playwright** pour des tests E2E (login, accès dashboard, navigation entre modules activés) (`pnpm test:e2e`).
 - **ESLint + Prettier** pour assurer un style de code cohérent (`pnpm lint`, `pnpm format`).
 
 Les tests couvrent :
 
 - le bootstrap de l’app (`App.jsx`) avec une config client mockée,
-- la logique d’activation des modules dans `moduleRegistry`,
-- un parcours utilisateur minimal (login → dashboard) en E2E.
+- la logique d’activation des modules dans le registry de modules,
+- plusieurs parcours utilisateur (login → dashboard, navigation entre modules) en E2E.
 
 ---
 

@@ -9,10 +9,10 @@
     "dashboard": { "enabled": true },
     "accounts": { "enabled": true },
     "transactions": { "enabled": true },
-    "approvals": { "enabled": false },
-    "users-roles": { "enabled": false },
-    "reports": { "enabled": false },
-    "audit": { "enabled": false }
+  "approvals": { "enabled": true },
+  "users-roles": { "enabled": true },
+  "reports": { "enabled": true },
+  "audit": { "enabled": true }
   },
   "api": {
     "baseUrl": "https://api.mabanque.com",

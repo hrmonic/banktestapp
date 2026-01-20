@@ -7,32 +7,14 @@ import reports from "./reports/module.js";
 import audit from "./audit/module.js";
 
 /** @typedef {import("./types.d.js").BankModule} BankModule */
+/** @typedef {import("../lib/configSchema.js").clientConfigSchema} ClientConfigSchema */
 
-class ModuleRegistry {
-  constructor() {
-    /** @type {Record<string, BankModule>} */
-    this.modules = {};
-    /** @type {BankModule[]} */
-    this.enabledModules = [];
-    this.initialized = false;
-  }
   /**
-   * Initialize the registry with all known modules and compute
-   * the list of enabled modules based on client configuration.
+ * Enregistrement statique de tous les modules connus de l'application.
    *
-   * Expected config shape (see client.config.json):
-   * {
-   *   modules: {
-   *     "dashboard": { enabled: true },
-   *     "transactions": { enabled: false },
-   *     ...
-   *   }
-   * }
-   */
-  initialize(config) {
-    if (this.initialized) return;
-    /** @type {Record<string, BankModule>} */
-    this.modules = {
+ * La logique d'activation/désactivation est pure et pilotée par client.config.json.
+ */
+const allModules = /** @type {Record<string, BankModule>} */ ({
       dashboard,
       accounts,
       transactions,
@@ -40,28 +22,81 @@ class ModuleRegistry {
       "users-roles": usersRoles,
       reports,
       audit,
-    };
+});
 
+/**
+ * Retourne la liste des modules activés en fonction de la configuration client.
+ *
+ * @param {import("zod").infer<typeof import("../lib/configSchema.js").clientConfigSchema>=} config
+ * @returns {BankModule[]}
+ */
+export function getEnabledModules(config) {
     const modulesConfig = config?.modules;
-    // If no config is provided, enable all known modules by default.
+
+  // Si aucune config n'est fournie, on active tous les modules connus.
     const enabledIds = modulesConfig
       ? Object.entries(modulesConfig)
           .filter(([, value]) => value?.enabled !== false)
           .map(([id]) => id)
-      : Object.keys(this.modules);
+    : Object.keys(allModules);
 
-    this.enabledModules = enabledIds
-      .map((id) => this.modules[id])
+  return enabledIds
+    .map((id) => allModules[id])
       .filter(Boolean);
-    this.initialized = true;
-  }
-  getEnabledModules(config) {
-    if (!this.initialized) this.initialize(config);
-    return this.enabledModules;
-  }
-  getAllModules() {
-    return Object.values(this.modules);
-  }
 }
 
-export const moduleRegistry = new ModuleRegistry();
+/**
+ * Retourne tous les modules déclarés, sans filtrage.
+ *
+ * @returns {BankModule[]}
+ */
+export function getAllModules() {
+  return Object.values(allModules);
+  }
+
+/**
+ * Retourne un module à partir de son identifiant.
+ *
+ * @param {string} id
+ * @returns {BankModule | undefined}
+ */
+export function getModuleById(id) {
+  return allModules[id];
+}
+
+/**
+ * Retourne true si un utilisateur avec un ensemble de permissions donné
+ * peut accéder à un module.
+ *
+ * @param {BankModule} module
+ * @param {string[]} permissions
+ */
+export function canAccessModule(module, permissions) {
+  const required = module.permissionsRequired || [];
+  if (required.length === 0) return true;
+  return required.some((perm) => permissions.includes(perm));
+}
+
+/**
+ * Construit les items de sidebar à partir des modules activés
+ * et éventuellement des permissions de l'utilisateur.
+ *
+ * @param {import("zod").infer<typeof import("../lib/configSchema.js").clientConfigSchema>=} config
+ * @param {string[]=} userPermissions
+ * @returns {import("./types.d.js").BankModuleSidebarItem[]}
+ */
+export function getSidebarItems(config, userPermissions = []) {
+  const modules = getEnabledModules(config);
+
+  return modules
+    .filter((mod) => canAccessModule(mod, userPermissions))
+    .flatMap((mod) =>
+      (mod.sidebarItems || []).map((item) => ({
+        ...item,
+        to: item.to || mod.basePath,
+        order: item.order ?? 0,
+      }))
+    )
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+}
+

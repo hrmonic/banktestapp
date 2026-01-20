@@ -11,6 +11,15 @@ export default defineConfig({
     },
   },
   server: { port: 5173, host: true },
+  /**
+   * Configure esbuild so that .js files in src/ can contain JSX.
+   * This matches our usage in files like authProvider.js et rbac.js,
+   * and keeps JSX support consistent avec les fichiers .jsx.
+   */
+  esbuild: {
+    loader: "jsx",
+    include: /src\/.*\.[jt]sx?$/,
+  },
   build: {
     outDir: "dist",
     sourcemap: true,
@@ -22,11 +31,11 @@ export default defineConfig({
           query: ["@tanstack/react-query"],
           forms: ["react-hook-form", "zod"],
           i18n: ["i18next", "react-i18next"],
-          ui: ["@bank/ui"]
-        }
-      }
-    }
+          ui: ["@bank/ui"],
+        },
+      },
+    },
   },
   define: { __APP_VERSION__: JSON.stringify(process.env.npm_package_version) },
-  optimizeDeps: { include: ["@bank/ui"] }
+  optimizeDeps: { include: ["@bank/ui"] },
 });
