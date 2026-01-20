@@ -4,6 +4,7 @@
     "logo": "/logo.svg",
     "primaryColor": "#4e0aaf"
   },
+  "themeKey": "default",
   "modules": {
     "dashboard": { "enabled": true },
     "accounts": { "enabled": true },

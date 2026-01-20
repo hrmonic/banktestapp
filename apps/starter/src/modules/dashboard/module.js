@@ -1,6 +1,10 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
+/**
+ * Page d’accueil du module Dashboard.
+ * Exemple de module conforme au contrat BankModule.
+ */
 function DashboardHome() {
   return (
     <div className="p-6">
@@ -18,7 +22,8 @@ function DashboardRoutes() {
   );
 }
 
-export default {
+/** @type {import("../types.d.js").BankModule} */
+const dashboardModule = {
   id: "dashboard",
   name: "Dashboard",
   basePath: "/dashboard",
@@ -27,3 +32,5 @@ export default {
     { label: "Dashboard", to: "/dashboard" }
   ],
 };
+
+export default dashboardModule;

@@ -16,6 +16,15 @@
 
 ---
 
+## ✨ Highlights for reviewers
+
+- **Modular architecture**: feature modules (Dashboard, Transactions, Users & Roles, Audit) wired via a central registry and client config.
+- **Reusable UI kit**: `@bank/ui` (Button, Card, PageLayout) shared across the app, ready to be published.
+- **Banking-focused UX**: backoffice-style layout, login, navigation, and pages tailored to internal banking tools.
+- **Quality & tests**: Vitest + Testing Library (unit/components) and Playwright (E2E smoke), plus architecture docs in `docs/`.
+
+---
+
 ## 📖 About (English overview)
 
 **Modular BankUI Studio** is a front-end only, modular backoffice UI for banking use cases.
@@ -189,24 +198,28 @@ const customAdapter = {
 - Vue d’ensemble des KPIs bancaires.
 - Widgets configurables par rôle.
 - Filtres temporels et par segment (clients, produits, régions, etc. selon implémentation).
+- Exemple de cas d’usage : suivi quotidien des encours, volumes de virements, incidents majeurs pour les équipes siège.
 
 ### 💸 Transactions
 
 - Liste paginée avec filtres avancés (date, montant, statut, canal, etc.).
 - Approbation en lot avec workflow d’actions (approve / reject / reassign).
 - Export CSV/XLSX (via vos APIs ou utilitaires front).
+- Exemple de cas d’usage : validation manuelle des paiements à haut montant ou vers des zones sensibles avec double contrôle.
 
 ### 👥 Utilisateurs & Rôles
 
 - Gestion des rôles et permissions (RBAC).
 - Attribution de permissions fines par module / action.
 - Intégration possible avec une IAM/IDP existante (OIDC, SAML, etc. via adaptateurs).
+- Exemple de cas d’usage : donner à un manager d’agence l’accès en lecture seule aux transactions, mais en écriture sur les fiches clients de son périmètre.
 
 ### 📜 Audit (optionnel)
 
 - Logs d’activité utilisateur.
 - Traçabilité fine par ressource / module / action.
 - Vue filtrable pour investiguer incidents et anomalies.
+- Exemple de cas d’usage : reconstituer le fil des actions sur un compte client en cas de litige ou de contrôle interne.
 
 ---
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { parseClientConfig } from "./configSchema.js";
 
 export function useClientConfig() {
   const [config, setConfig] = useState(null);
@@ -11,11 +12,10 @@ export function useClientConfig() {
         const res = await fetch("/client.config.json");
         if (!res.ok) throw new Error("Erreur lors du chargement de la configuration");
         const data = await res.json();
-        // Basic shape check to avoid cryptic runtime errors later.
-        if (!data || typeof data !== "object") {
-          throw new Error("Configuration client invalide");
-        }
-        setConfig(data);
+        // Validation via schéma : permet de détecter rapidement une
+        // config invalide côté client, avec un message exploitable.
+        const parsed = parseClientConfig(data);
+        setConfig(parsed);
       } catch (err) {
         setError(err);
       } finally {

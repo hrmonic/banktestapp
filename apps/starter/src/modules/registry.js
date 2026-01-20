@@ -6,9 +6,13 @@ import usersRoles from "./users-roles/module.js";
 import reports from "./reports/module.js";
 import audit from "./audit/module.js";
 
+/** @typedef {import("./types.d.js").BankModule} BankModule */
+
 class ModuleRegistry {
   constructor() {
+    /** @type {Record<string, BankModule>} */
     this.modules = {};
+    /** @type {BankModule[]} */
     this.enabledModules = [];
     this.initialized = false;
   }
@@ -27,6 +31,7 @@ class ModuleRegistry {
    */
   initialize(config) {
     if (this.initialized) return;
+    /** @type {Record<string, BankModule>} */
     this.modules = {
       dashboard,
       accounts,

@@ -85,6 +85,7 @@ Le `moduleRegistry` :
     "logo": "/logo.svg",
     "primaryColor": "#4e0aaf"
   },
+  "themeKey": "default",
   "modules": {
     "dashboard": { "enabled": true },
     "accounts": { "enabled": true },
@@ -101,6 +102,56 @@ Le `moduleRegistry` :
   }
 }
 ```
+
+### Template de nouveau module métier
+
+Pour créer un nouveau module (ex: `limits` pour les plafonds), on conseille la structure suivante :
+
+```text
+apps/starter/src/modules/limits/
+├── module.js        # Contrat BankModule
+└── views/…          # (optionnel) sous-pages spécifiques
+```
+
+Exemple de `module.js` :
+
+```js
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+
+function LimitsHome() {
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Plafonds & limites</h1>
+      <p>
+        Exemple de module : gestion des plafonds carte, virements, canaux,
+        avec données servies par vos APIs.
+      </p>
+    </div>
+  );
+}
+
+function LimitsRoutes() {
+  return (
+    <Routes>
+      <Route index element={<LimitsHome />} />
+    </Routes>
+  );
+}
+
+/** @type {import("./types.d.js").BankModule} */
+const limitsModule = {
+  id: "limits",
+  name: "Limits",
+  basePath: "/limits",
+  routes: LimitsRoutes,
+  sidebarItems: [{ label: "Limits", to: "/limits" }],
+};
+
+export default limitsModule;
+```
+
+Il suffit ensuite de l’enregistrer dans `modules/registry.js` et de l’activer via `client.config.json`.
 
 ### Points à noter pour reviewers
 
