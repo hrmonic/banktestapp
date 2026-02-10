@@ -1,11 +1,16 @@
 import { test, expect } from "@playwright/test";
+import { demoValidConfig, withClientConfig } from "./_helpers/config";
 
 test("login et accès au dashboard (admin par défaut)", async ({ page }) => {
-  await page.goto("/");
+  // Fournit une configuration de démo stable pour éviter toute dépendance
+  // à un fichier client.config.json externe pendant les tests.
+  await withClientConfig(page, demoValidConfig);
 
-  await expect(
-    page.getByRole("heading", { name: /backoffice bancaire démo/i })
-  ).toBeVisible();
+  // Va directement sur la page de login pour éviter toute ambiguïté de routing.
+  await page.goto("/login");
+
+  // Attend explicitement que le formulaire de login soit prêt.
+  await page.getByLabel(/email/i).waitFor();
 
   await page.getByLabel(/email/i).fill("demo@bank.test");
   await page.getByLabel(/mot de passe/i).fill("password");
@@ -15,8 +20,11 @@ test("login et accès au dashboard (admin par défaut)", async ({ page }) => {
 });
 
 test("navigation entre modules activés pour un admin", async ({ page }) => {
-  await page.goto("/");
+  await withClientConfig(page, demoValidConfig);
 
+  await page.goto("/login");
+
+  await page.getByLabel(/email/i).waitFor();
   await page.getByLabel(/email/i).fill("demo@bank.test");
   await page.getByLabel(/mot de passe/i).fill("password");
   await page.getByRole("button", { name: /se connecter/i }).click();
@@ -28,14 +36,18 @@ test("navigation entre modules activés pour un admin", async ({ page }) => {
   ).toBeVisible();
 });
 
-test("un utilisateur sans rôle admin ne voit pas Users & Roles", async ({ page }) => {
-  // Simule un rôle \"user\" pour la démo RBAC
-  await page.addInitScript(() => {
-    window.localStorage.setItem("demo-role", "user");
-  });
+test("un utilisateur sans rôle admin ne voit pas Users & Roles", async ({
+  page,
+}) => {
+  await withClientConfig(page, demoValidConfig);
 
-  await page.goto("/");
+  await page.goto("/login");
 
+  await page.getByLabel(/email/i).waitFor();
+  // Choisit explicitement un profil non-admin via le sélecteur de la page.
+  await page
+    .getByLabel(/profil de démo/i)
+    .selectOption("agent-agence");
   await page.getByLabel(/email/i).fill("demo@bank.test");
   await page.getByLabel(/mot de passe/i).fill("password");
   await page.getByRole("button", { name: /se connecter/i }).click();

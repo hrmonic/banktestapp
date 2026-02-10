@@ -2,8 +2,17 @@ import React, { createContext, useState, useContext } from "react";
 
 const AuthContext = createContext();
 
+function getInitialUserFromStorage() {
+  if (typeof window === "undefined") return null;
+  const storedProfile = window.localStorage.getItem("demo-profile");
+  if (!storedProfile) return null;
+  // Profil persistant de démo : permet de recharger directement une session
+  // front après un rafraîchissement ou un deep-link (/transactions, /users-roles, etc.).
+  return { name: "Utilisateur", profile: storedProfile, roles: [storedProfile] };
+}
+
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(getInitialUserFromStorage);
   const [loading, setLoading] = useState(false);
 
   const login = async (credentials) => {

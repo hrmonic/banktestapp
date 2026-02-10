@@ -1,0 +1,16 @@
+{
+  "branding": {
+    "name": "Invalid API Config",
+    "logo": "/logo.svg",
+    "primaryColor": "#ff0000"
+  },
+  "modules": {
+    "dashboard": { "enabled": true },
+    "accounts": { "enabled": true }
+  },
+  "api": {
+    "baseUrl": "notaurl",
+    "timeout": 5000
+  }
+}
+

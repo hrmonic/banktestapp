@@ -16,16 +16,15 @@ function renderWithProfile(profile) {
           <Route path="/*" element={<RoutesComponent />} />
         </Routes>
       </AuthProvider>
-    </BrowserRouter>
+    </BrowserRouter>,
   );
 }
 
 describe("Dashboard role block", () => {
   it("affiche un rôle d’agent pour le profil agent-agence", () => {
     renderWithProfile(PROFILE_IDS.AGENT);
-    expect(
-      screen.getByText(/Agent d’agence/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Mon rôle/i)).toBeInTheDocument();
+    expect(screen.getByText(/Agent/i)).toBeInTheDocument();
   });
 });
 

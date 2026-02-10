@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useNavigate, useParams } from "react-router-dom";
-import { Card, Button } from "@bank/ui";
+import { Card, Button, VirtualizedList } from "@bank/ui";
 import {
   listAccounts,
   getAccountById,
@@ -45,52 +45,47 @@ function AccountsList() {
           </p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full text-sm">
-              <thead>
-                <tr className="border-b border-slate-200 text-left text-xs uppercase text-slate-500">
-                  <th className="px-3 py-2">Compte</th>
-                  <th className="px-3 py-2">Titulaire</th>
-                  <th className="px-3 py-2">IBAN</th>
-                  <th className="px-3 py-2">Type</th>
-                  <th className="px-3 py-2">Statut</th>
-                  <th className="px-3 py-2 text-right">Solde</th>
-                  <th className="px-3 py-2"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {accounts.map((account) => (
-                  <tr
-                    key={account.id}
-                    className="border-b border-slate-100 last:border-0"
-                  >
-                    <td className="px-3 py-2 font-mono text-xs text-slate-700">
-                      {account.id}
-                    </td>
-                    <td className="px-3 py-2">{account.holder}</td>
-                    <td className="px-3 py-2 text-xs text-slate-600">
-                      {account.iban}
-                    </td>
-                    <td className="px-3 py-2">{account.type}</td>
-                    <td className="px-3 py-2">{account.status}</td>
-                    <td className="px-3 py-2 text-right">
-                      {account.balance.toLocaleString("fr-FR", {
-                        style: "currency",
-                        currency: account.currency,
-                      })}
-                    </td>
-                    <td className="px-3 py-2 text-right">
-                      <Button
-                        size="sm"
-                        variant="secondary"
-                        onClick={() => navigate(`/accounts/${account.id}`)}
-                      >
-                        Détails
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <VirtualizedList
+              items={accounts}
+              itemHeight={56}
+              overscan={5}
+              className="max-h-[480px]"
+              renderItem={(account) => (
+                <table
+                  key={account.id}
+                  className="min-w-full text-sm border-b border-slate-100 last:border-0"
+                >
+                  <tbody>
+                    <tr>
+                      <td className="px-3 py-2 font-mono text-xs text-slate-700">
+                        {account.id}
+                      </td>
+                      <td className="px-3 py-2">{account.holder}</td>
+                      <td className="px-3 py-2 text-xs text-slate-600">
+                        {account.iban}
+                      </td>
+                      <td className="px-3 py-2">{account.type}</td>
+                      <td className="px-3 py-2">{account.status}</td>
+                      <td className="px-3 py-2 text-right">
+                        {account.balance.toLocaleString("fr-FR", {
+                          style: "currency",
+                          currency: account.currency,
+                        })}
+                      </td>
+                      <td className="px-3 py-2 text-right">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => navigate(`/accounts/${account.id}`)}
+                        >
+                          Détails
+                        </Button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              )}
+            />
           </div>
         )}
       </Card>

@@ -5,54 +5,49 @@
  * illustrer le RBAC modulaire. En production, la vérité viendrait
  * d'un backend / IDP.
  */
+import { PROFILE_IDS, PERMISSIONS } from "../../core/constants.js";
 
-export const PROFILE_IDS = {
-  AGENT: "agent-agence",
-  MANAGER: "manager-agence",
-  ANALYST: "analyste-audit",
-  ADMIN: "admin-backoffice",
-  SUPER_ADMIN: "super-admin",
-};
+export { PROFILE_IDS };
 
 /** @type {Record<string, string[]>} */
 const PROFILE_PERMISSIONS = {
   [PROFILE_IDS.AGENT]: [
-    "accounts:view",
-    "dashboard:view",
+    PERMISSIONS.ACCOUNTS_VIEW,
+    PERMISSIONS.DASHBOARD_VIEW,
   ],
   [PROFILE_IDS.MANAGER]: [
-    "accounts:view",
-    "accounts:edit",
-    "transactions:view",
-    "dashboard:view",
-    "reports:view",
+    PERMISSIONS.ACCOUNTS_VIEW,
+    PERMISSIONS.ACCOUNTS_EDIT,
+    PERMISSIONS.TRANSACTIONS_VIEW,
+    PERMISSIONS.DASHBOARD_VIEW,
+    PERMISSIONS.REPORTS_VIEW,
   ],
   [PROFILE_IDS.ANALYST]: [
-    "transactions:view",
-    "audit:view",
-    "reports:view",
-    "dashboard:view",
+    PERMISSIONS.TRANSACTIONS_VIEW,
+    PERMISSIONS.AUDIT_VIEW,
+    PERMISSIONS.REPORTS_VIEW,
+    PERMISSIONS.DASHBOARD_VIEW,
   ],
   [PROFILE_IDS.ADMIN]: [
-    "accounts:view",
-    "accounts:edit",
-    "transactions:view",
-    "audit:view",
-    "rbac:manage",
-    "admin",
-    "reports:view",
-    "dashboard:view",
+    PERMISSIONS.ACCOUNTS_VIEW,
+    PERMISSIONS.ACCOUNTS_EDIT,
+    PERMISSIONS.TRANSACTIONS_VIEW,
+    PERMISSIONS.AUDIT_VIEW,
+    PERMISSIONS.RBAC_MANAGE,
+    PERMISSIONS.ADMIN,
+    PERMISSIONS.REPORTS_VIEW,
+    PERMISSIONS.DASHBOARD_VIEW,
   ],
   [PROFILE_IDS.SUPER_ADMIN]: [
-    "accounts:view",
-    "accounts:edit",
-    "transactions:view",
-    "audit:view",
-    "rbac:manage",
-    "admin",
-    "reports:view",
-    "dashboard:view",
-    "super-admin",
+    PERMISSIONS.ACCOUNTS_VIEW,
+    PERMISSIONS.ACCOUNTS_EDIT,
+    PERMISSIONS.TRANSACTIONS_VIEW,
+    PERMISSIONS.AUDIT_VIEW,
+    PERMISSIONS.RBAC_MANAGE,
+    PERMISSIONS.ADMIN,
+    PERMISSIONS.REPORTS_VIEW,
+    PERMISSIONS.DASHBOARD_VIEW,
+    PERMISSIONS.SUPER_ADMIN,
   ],
 };
 

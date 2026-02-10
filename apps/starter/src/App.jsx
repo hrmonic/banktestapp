@@ -7,17 +7,25 @@ import { LoadingFallback } from "./components/LoadingFallback.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import UnauthorizedPage from "./pages/UnauthorizedPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
+import InvalidConfigPage from "./pages/InvalidConfigPage.jsx";
 import { useClientConfig } from "./lib/useClientConfig.js";
 import { RequireAuth, ModuleRouteGuard } from "./lib/security/rbac.js";
+import { useAuth } from "./lib/auth/authProvider.js";
 
 function App() {
   const { config, isLoading, error } = useClientConfig();
+  const { isAuthenticated } = useAuth();
 
   if (isLoading) {
     return <LoadingFallback />;
   }
 
   if (error) {
+    // Erreur de validation de configuration : on affiche une page dédiée.
+    if (error.name === "ZodError") {
+      return <InvalidConfigPage error={error} />;
+    }
+
     return (
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-4">Erreur</h1>
@@ -43,7 +51,13 @@ function App() {
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
           <Route
             path="/"
-            element={<Navigate to={modules[0]?.basePath || "/"} replace />}
+            element={
+              isAuthenticated ? (
+                <Navigate to={modules[0]?.basePath || "/"} replace />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
           />
           <Route
             element={

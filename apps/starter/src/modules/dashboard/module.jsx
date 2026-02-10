@@ -8,6 +8,7 @@ import {
   getTransactionsByType,
   getRecentActivity,
 } from "../../lib/adapters/dashboardAdapter.js";
+import { usePerfMetrics } from "../../lib/perf/usePerfMetrics.js";
 import { useAuth } from "../../lib/auth/authProvider.js";
 import { PROFILE_IDS } from "../../lib/security/profilePermissions.js";
 import { MiniLineChart } from "../../components/charts/MiniLineChart.jsx";
@@ -20,6 +21,7 @@ import { TrendIndicator } from "../../components/charts/TrendIndicator.jsx";
  */
 function DashboardHome() {
   const { user } = useAuth();
+  usePerfMetrics("dashboard");
   const navigate = useNavigate();
   const [kpis, setKpis] = useState(null);
   const [alerts, setAlerts] = useState([]);

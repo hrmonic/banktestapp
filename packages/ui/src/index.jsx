@@ -1,4 +1,5 @@
 import React from "react";
+import { VirtualizedList } from "./VirtualizedList.jsx";
 
 /**
  * Design system ultra léger pour la vitrine.
@@ -82,9 +83,14 @@ export function Placeholder({ children }) {
   );
 }
 
+// Exporte aussi VirtualizedList en tant qu'export nommé pour permettre
+// `import { VirtualizedList } from "@bank/ui"` côté app.
+export { VirtualizedList };
+
 export default {
   Button,
   Card,
   PageLayout,
   Placeholder,
+  VirtualizedList,
 };

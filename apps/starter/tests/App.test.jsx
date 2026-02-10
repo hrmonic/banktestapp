@@ -31,7 +31,7 @@ describe("App", () => {
     );
 
     expect(
-      screen.getByRole("heading", { name: /connexion/i })
+      screen.getByText(/Backoffice bancaire démo/i)
     ).toBeInTheDocument();
   });
 });

@@ -47,7 +47,7 @@ describe("moduleRegistry helpers", () => {
       },
     };
 
-    const items = getSidebarItems(config);
+    const items = getSidebarItems(config, ["transactions:view"]);
     const labels = items.map((i) => i.label);
 
     expect(labels).toContain("Dashboard");

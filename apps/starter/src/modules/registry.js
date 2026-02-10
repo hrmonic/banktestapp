@@ -6,8 +6,8 @@ import usersRoles from "./users-roles/module.js";
 import reports from "./reports/module.js";
 import audit from "./audit/module.js";
 
-/** @typedef {import("./types.d.js").BankModule} BankModule */
-/** @typedef {import("../lib/configSchema.js").clientConfigSchema} ClientConfigSchema */
+/** @typedef {import("../core/types").BankModule} BankModule */
+/** @typedef {import("../lib/config/clientConfig").ClientConfig} ClientConfig */
 
   /**
  * Enregistrement statique de tous les modules connus de l'application.
@@ -27,7 +27,7 @@ const allModules = /** @type {Record<string, BankModule>} */ ({
 /**
  * Retourne la liste des modules activés en fonction de la configuration client.
  *
- * @param {import("zod").infer<typeof import("../lib/configSchema.js").clientConfigSchema>=} config
+ * @param {ClientConfig=} config
  * @returns {BankModule[]}
  */
 export function getEnabledModules(config) {
@@ -81,7 +81,7 @@ export function canAccessModule(module, permissions) {
  * Construit les items de sidebar à partir des modules activés
  * et éventuellement des permissions de l'utilisateur.
  *
- * @param {import("zod").infer<typeof import("../lib/configSchema.js").clientConfigSchema>=} config
+ * @param {ClientConfig=} config
  * @param {string[]=} userPermissions
  * @returns {import("./types.d.js").BankModuleSidebarItem[]}
  */

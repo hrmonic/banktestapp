@@ -5,8 +5,8 @@ import {
   PermissionsProvider,
   RequirePermission,
   ModuleRouteGuard,
-} from "../src/lib/security/rbac.js";
-import { AuthProvider } from "../src/lib/auth/authProvider.js";
+} from "../../src/lib/security/rbac.js";
+import { AuthProvider } from "../../src/lib/auth/authProvider.js";
 
 function DummyPage({ label }) {
   return <div>{label}</div>;

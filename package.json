@@ -3,10 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npm run dev --prefix apps/starter",
-    "build": "npm run build --prefix apps/starter",
-    "preview": "npm run preview --prefix apps/starter",
+    "dev": "pnpm --filter starter run dev",
+    "build": "pnpm --filter starter run build",
+    "preview": "pnpm --filter starter run preview",
     "test": "vitest",
+    "generate:module": "node ./scripts/generate-module.mjs",
     "test:e2e": "playwright test",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint . --fix",
@@ -19,11 +20,14 @@
     "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "^14.5.1",
+    "@vitejs/plugin-react": "^4.0.0",
     "autoprefixer": "^10.4.23",
+    "axe-core": "^4.11.1",
     "eslint": "^9.9.1",
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.14",
     "globals": "^15.9.0",
     "husky": "^8.0.3",
     "jsdom": "^23.0.1",
@@ -32,6 +36,7 @@
     "postcss": "^8.5.6",
     "prettier": "^3.1.0",
     "tailwindcss": "^3.4.19",
+    "typescript-eslint": "^8.0.0",
     "vitest": "^1.0.4"
   },
   "lint-staged": {
@@ -42,5 +47,15 @@
     "*.{json,css,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "react": "18.2.0",
+      "react-dom": "18.2.0"
+    }
   }
 }

@@ -1,0 +1,10 @@
+{
+  "branding": {
+    "name": "Missing Modules Config"
+  },
+  "modules": {},
+  "api": {
+    "baseUrl": "https://api.example.com"
+  }
+}
+

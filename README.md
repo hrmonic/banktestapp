@@ -87,8 +87,11 @@ pnpm dev
 # Tests unitaires / intégration
 pnpm test
 
-# Tests end-to-end (Playwright, si configuré)
+# Tests end-to-end (Playwright)
 pnpm test:e2e
+
+# Générer un nouveau module conforme au contrat BankModule
+pnpm generate:module my-module-id
 
 # Build tous les packages
 pnpm build

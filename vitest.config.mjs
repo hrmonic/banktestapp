@@ -3,11 +3,17 @@ import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react({ include: /\.(jsx|tsx)$/, fastRefresh: false })],
   test: {
     globals: true,
     environment: 'jsdom',
     setupFiles: ['./apps/starter/tests/setup.js'],
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/.{git,cache,output,vitest}/**',
+      'apps/starter/tests/e2e/**',
+    ],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],

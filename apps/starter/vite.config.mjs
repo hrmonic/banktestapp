@@ -7,7 +7,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
-      "@bank/ui": resolve(__dirname, "../../packages/ui/src"),
+      "@bank/ui": resolve(__dirname, "../../packages/ui/src/index.jsx"),
     },
   },
   server: { port: 5173, host: true },

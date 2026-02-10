@@ -1,6 +1,13 @@
 import { useState, useEffect } from "react";
 import { parseClientConfig } from "./configSchema.js";
 
+/** @typedef {import("./config/clientConfig").ClientConfig} ClientConfig */
+
+/**
+ * Hook de chargement et de validation de la configuration client.
+ *
+ * @returns {{ config: ClientConfig | null; isLoading: boolean; error: Error | null }}
+ */
 export function useClientConfig() {
   const [config, setConfig] = useState(null);
   const [isLoading, setLoading] = useState(true);
