@@ -4,15 +4,16 @@
 
 Modular BankUI Studio est une **suite UI front‑end uniquement**, modulaire, pensée pour les back‑offices bancaires et environnements financiers.
 
-- 100 % front‑end : aucun backend dans ce dépôt, vous branchez vos propres APIs.  
-- Modulaire : activation/désactivation de modules métier (Dashboard, Transactions, Users & Roles, Audit, et vos propres modules).  
-- Brandable : theming par client (logo, couleurs, tokens de design).  
-- Focalisé entreprise : RBAC, audit, performance, accessibilité (WCAG 2.1 AA).
+- **100 % TypeScript** (`.ts` / `.tsx`) pour la robustesse et la maintenabilité.
+- 100 % front‑end : aucun backend dans ce dépôt, vous branchez vos propres APIs.
+- Modulaire : activation/désactivation de modules métier (Dashboard, Accounts, Transactions, Approvals, Users & Roles, Reports, Audit, et vos propres modules).
+- Brandable : theming par client (logo, couleurs, tokens de design, config session et auth).
+- Focalisé entreprise : RBAC, audit, timeout de session, durcissement sécurité (apiClient, sanitizeHtml), performance, accessibilité (WCAG 2.1 AA).
 
 Le projet est conçu à la fois comme **vitrine architecturale** et comme **starter kit** pour des intégrations réelles en entreprise :
 
-- architecture claire et modulaire,  
-- séparation nette des responsabilités,  
+- architecture claire et modulaire,
+- séparation nette des responsabilités,
 - tests et documentation adaptés aux revues techniques (CTO, staff engineers, leads).
 
 ### Personas & utilisateurs cibles
@@ -23,10 +24,10 @@ Le projet est conçu à la fois comme **vitrine architecturale** et comme **star
 
 Leurs priorités :
 
-- comprendre le câblage des modules (`moduleRegistry`, `client.config.json`),  
-- savoir comment ajouter un module avec ses routes et sa navigation,  
-- implémenter et surcharger les adaptateurs d’API par client,  
-- garder un code testé, maintenable et compatible avec les contraintes IT.
+- comprendre le câblage des modules (`modules/registry.ts`, `client.config.json`, ConfigGate),
+- savoir comment ajouter un module avec ses routes et sa navigation (contrat BankModule),
+- implémenter et surcharger les adaptateurs d’API par client,
+- garder un code testé, maintenable et compatible avec les contraintes IT (Vitest, Playwright, test:security).
 
 #### 2. Équipes IT / Ops / Plateforme
 
@@ -34,9 +35,9 @@ Leurs priorités :
 
 Leurs priorités :
 
-- processus de build et de déploiement (assets statiques, reverse proxy / gateway),  
-- configuration par environnement (`client.config.json` par env),  
-- posture de sécurité (tokens, CSP, logs),  
+- processus de build et de déploiement (assets statiques, reverse proxy / gateway),
+- configuration par environnement (`client.config.json` par env),
+- posture de sécurité (tokens, CSP, logs),
 - observabilité et monitoring.
 
 #### 3. Product owners & métiers
@@ -45,16 +46,16 @@ Leurs priorités :
 
 Leurs priorités :
 
-- savoir quels modules existent et quels problèmes ils adressent,  
-- voir comment l’UI s’adapte à leurs processus (rôles, workflows, branding),  
+- savoir quels modules existent et quels problèmes ils adressent,
+- voir comment l’UI s’adapte à leurs processus (rôles, workflows, branding),
 - identifier ce qui reste côté backend et systèmes internes (conformité, KYC/AML, risques).
 
 ### Architecture haut niveau
 
 Modular BankUI Studio fournit :
 
-- une **starter app** `apps/starter` servant de démo et de base d’intégration,  
-- un **UI kit** réutilisable dans `packages/ui` exposé en `@bank/ui`,  
+- une **starter app** `apps/starter` servant de démo et de base d’intégration,
+- un **UI kit** réutilisable dans `packages/ui` exposé en `@bank/ui`,
 - un **fichier de configuration client** `public/client.config.json` pour piloter branding, modules et paramètres d’API.
 
 ```mermaid
@@ -75,47 +76,33 @@ flowchart TD
 
 ### Fonctionnement des modules
 
-Chaque module métier expose un **contrat de module** :
+Chaque module métier expose un **contrat BankModule** (interface TypeScript dans `core/types.ts`) : `id`, `name`, `basePath`, `routes`, `sidebarItems`, `permissionsRequired?`, `featureFlags?`.
 
-```js
-export default {
-  id: "dashboard",
-  name: "Dashboard",
-  basePath: "/dashboard",
-  routes: DashboardRoutes,
-  sidebarItems: [
-    { label: "Dashboard", to: "/dashboard" },
-  ],
-};
-```
+Le **registry** (`modules/registry.ts`) :
 
-Le `moduleRegistry` :
-
-- centralise les modules connus,  
-- lit `client.config.json` pour déterminer quels modules sont **activés**,  
-- expose `getEnabledModules(config?)` utilisé par le routeur et la coque d’application.
+- centralise tous les modules connus (dashboard, accounts, transactions, approvals, users-roles, reports, audit),
+- lit la config client (chargée et validée par ConfigGate) pour déterminer quels modules sont **activés**,
+- expose `getEnabledModules(config?)`, `getSidebarItems(config, userPermissions)` et `canAccessModule(module, permissions)` pour le routeur et l’AppShell.
 
 Conséquences :
 
-- ajouter un module = créer un dossier, implémenter le contrat, l’enregistrer,  
-- activer/désactiver des modules par environnement ou par client,  
+- ajouter un module = créer un dossier, implémenter le contrat, l’enregistrer,
+- activer/désactiver des modules par environnement ou par client,
 - garder une navigation et un routing cohérents.
 
 ### Ce que vous pouvez personnaliser
 
-- **Branding & thème** : nom, logo, couleur principale, tokens de design.  
-- **Modules** : activer/désactiver les modules fournis, ajouter les vôtres.  
-- **Adaptateurs d’API** : remplacer les adaptateurs REST génériques par des versions spécifiques client.  
-- **Contrôle d’accès** : intégrer votre IAM / IDP et brancher le RBAC au niveau des modules et des routes.  
+- **Branding & thème** : nom, logo, couleur principale, tokens de design.
+- **Modules** : activer/désactiver les modules fournis, ajouter les vôtres.
+- **Adaptateurs d’API** : remplacer les adaptateurs REST génériques par des versions spécifiques client.
+- **Contrôle d’accès** : intégrer votre IAM / IDP et brancher le RBAC au niveau des modules et des routes.
 - **UX** : étendre ou remplacer les vues internes de chaque module en réutilisant le UI kit partagé.
 
 ### Où aller ensuite
 
-- Pour l’installation et la mise en place de l’environnement, voir `getting-started.md`.  
-- Pour une vue détaillée de l’architecture, voir `architecture.md`.  
-- Pour les détails de chaque module fonctionnel, voir les fichiers sous `modules/`.  
-- Pour la configuration et les APIs, voir `configuration/client-config.md` et `configuration/api-adapters.md`.  
-- Pour la sécurité, l’accessibilité, la performance et les tests, voir les guides dédiés.  
+- Pour l’installation et la mise en place de l’environnement, voir `getting-started.md`.
+- Pour une vue détaillée de l’architecture, voir `architecture.md`.
+- Pour les détails de chaque module fonctionnel, voir les fichiers sous `modules/`.
+- Pour la configuration et les APIs, voir `configuration/client-config.md` et `configuration/api-adapters.md`.
+- Pour la sécurité, l’accessibilité, la performance et les tests, voir les guides dédiés.
 - Pour un parcours complet d’intégration en entreprise, voir `enterprise-integration-guide.md`.
-
-

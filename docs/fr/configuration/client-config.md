@@ -4,10 +4,11 @@
 
 `client.config.json` décrit le comportement de l’app starter pour un client et un environnement donnés :
 
-- branding (nom, logo, couleurs),  
-- modules activés,  
-- endpoints et timeouts d’API,  
-- configuration du provider d’authentification.
+- branding (nom, logo, couleurs), thème (`themeKey`),
+- modules activés,
+- endpoints et timeouts d’API,
+- configuration du provider d’authentification (`auth`, mode démo ou OIDC),
+- session (timeout d’inactivité, avertissement avant déconnexion).
 
 Localisation :
 
@@ -46,8 +47,8 @@ et chargé par l’app au runtime.
 
 #### `branding`
 
-- `name` – nom affiché de la banque / du client.  
-- `logo` – chemin vers le logo (servi depuis `public/`).  
+- `name` – nom affiché de la banque / du client.
+- `logo` – chemin vers le logo (servi depuis `public/`).
 - `primaryColor` – couleur principale du thème (peut alimenter des variables CSS).
 
 #### `themeKey` (optionnel)
@@ -87,7 +88,7 @@ Le `moduleRegistry` utilise cette section pour construire la liste des modules a
 
 Paramètres globaux d’API :
 
-- `baseUrl` – URL de base de l’API backend.  
+- `baseUrl` – URL de base de l’API backend.
 - `timeout` – timeout par défaut (ms).
 
 Vous pouvez ajouter vos propres clés :
@@ -104,26 +105,37 @@ Vous pouvez ajouter vos propres clés :
 
 #### `auth`
 
-Configuration du provider d’authentification, typiquement OIDC :
+Configuration du provider d’authentification. Deux modes :
+
+- **OIDC** : `type`, `issuer`, `clientId` (et optionnellement `mode: "oidc"`).
+- **Démo** : `mode: "demo"` pour utiliser les profils en mémoire / localStorage sans vrai IdP.
 
 ```json
 {
   "auth": {
     "type": "oidc",
     "issuer": "https://auth.mabanque.com",
-    "clientId": "backoffice-app"
+    "clientId": "backoffice-app",
+    "mode": "demo"
   }
 }
 ```
 
 À étendre selon votre librairie d’auth (scopes, redirect URIs, etc.).
 
+#### `session` (optionnel)
+
+Timeout d’inactivité et avertissement avant déconnexion :
+
+- `idleTimeoutMinutes` – durée d’inactivité avant déconnexion (ex. 15).
+- `warningBeforeLogoutSeconds` – délai d’affichage du modal d’avertissement avant logout (ex. 60).
+
 ### Configs par environnement
 
 Pattern typique :
 
-- `client.config.dev.json`  
-- `client.config.preprod.json`  
+- `client.config.dev.json`
+- `client.config.preprod.json`
 - `client.config.prod.json`
 
 et une étape de build ou de déploiement qui renomme / injecte le bon fichier en `client.config.json`.
@@ -183,5 +195,3 @@ et une étape de build ou de déploiement qui renomme / injecte le bon fichier e
   }
 }
 ```
-
-

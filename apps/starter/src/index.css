@@ -2,7 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Réglages globaux pour l’UI backoffice */
+/* ========== Variables thème sombre (type Cursor) ========== */
+:root.dark {
+  --dm-bg: #1e1e1e;
+  --dm-sidebar: #252526;
+  --dm-surface: #2d2d2d;
+  --dm-surface-hover: #333333;
+  --dm-border: #3c3c3c;
+  --dm-text: #cccccc;
+  --dm-text-muted: #9e9e9e;
+  --dm-accent: #007acc;
+  --dm-thead: #252526;
+}
+
+/* ========== Base ========== */
 html,
 body,
 #root {
@@ -13,3 +26,154 @@ body {
   @apply bg-slate-50 text-slate-900 antialiased;
 }
 
+.dark body {
+  background-color: var(--dm-bg);
+  color: var(--dm-text);
+}
+
+/* ========== Hiérarchie typo (titres, sous-titres) ========== */
+.dark h1,
+.dark .text-2xl.font-bold {
+  color: var(--dm-text);
+}
+
+.dark .text-sm.text-slate-600,
+.dark p.text-slate-600,
+.dark .text-slate-600 {
+  color: var(--dm-text-muted);
+}
+
+.dark label,
+.dark .text-slate-700 {
+  color: var(--dm-text-muted);
+}
+
+/* ========== Cartes ========== */
+.dark section.rounded-lg.border {
+  background-color: var(--dm-surface);
+  border-color: var(--dm-border);
+}
+
+.dark section.rounded-lg.border h2 {
+  color: var(--dm-text);
+}
+
+.dark section.rounded-lg.border p,
+.dark section.rounded-lg.border .text-slate-600 {
+  color: var(--dm-text-muted);
+}
+
+.dark section.rounded-lg.border.border-red-200 {
+  background-color: var(--dm-surface);
+  border-color: #5c2a2a;
+}
+
+.dark section.rounded-lg.border.border-red-200 h2 {
+  color: #e5a0a0;
+}
+
+.dark section.rounded-lg.border.border-red-200 p {
+  color: #b08080;
+}
+
+/* ========== Formulaires (inputs, select, textarea) ========== */
+.dark input[type='search'],
+.dark input[type='text'],
+.dark input[type='email'],
+.dark input[type='password'],
+.dark select,
+.dark textarea {
+  background-color: var(--dm-surface);
+  border-color: var(--dm-border);
+  color: var(--dm-text);
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: var(--dm-text-muted);
+}
+
+/* Flèche select visible en sombre */
+.dark select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239e9e9e'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1.25rem;
+  padding-right: 2rem;
+}
+
+/* ========== Boutons secondaires (surface sombre, cohérent avec sidebar) ========== */
+.dark button.border {
+  background-color: var(--dm-surface) !important;
+  border-color: var(--dm-border) !important;
+  color: var(--dm-text) !important;
+}
+
+.dark button.border:hover:not(:disabled) {
+  background-color: var(--dm-surface-hover) !important;
+  border-color: var(--dm-border) !important;
+  color: var(--dm-text) !important;
+}
+
+.dark button.border:focus-visible {
+  outline: 2px solid var(--dm-accent);
+  outline-offset: 2px;
+}
+
+.dark button.bg-blue-600:focus-visible {
+  outline: 2px solid var(--dm-accent);
+  outline-offset: 2px;
+}
+
+/* ========== Tableaux (lisibilité et séparation des lignes) ========== */
+.dark table {
+  border-collapse: collapse;
+}
+
+.dark thead tr {
+  background-color: var(--dm-thead);
+  border-bottom: 1px solid var(--dm-border);
+}
+
+.dark th {
+  color: var(--dm-text) !important;
+  border-bottom: 1px solid var(--dm-border);
+  font-weight: 600;
+}
+
+.dark tbody tr {
+  border-bottom: 1px solid var(--dm-border);
+  transition: background-color 0.15s ease;
+}
+
+.dark tbody tr:hover {
+  background-color: var(--dm-surface-hover);
+}
+
+.dark td {
+  color: var(--dm-text) !important;
+}
+
+.dark td.font-mono.text-slate-700,
+.dark td.text-slate-700,
+.dark td.text-slate-600 {
+  color: var(--dm-text-muted) !important;
+}
+
+.dark td.text-slate-900 {
+  color: var(--dm-text) !important;
+}
+
+.dark .border-t.border-slate-200 {
+  border-color: var(--dm-border) !important;
+}
+
+.dark .border-t.border-slate-200 .text-slate-600 {
+  color: var(--dm-text-muted);
+}
+
+/* ========== Densité compacte ========== */
+.density-compact [data-table-cell] {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}

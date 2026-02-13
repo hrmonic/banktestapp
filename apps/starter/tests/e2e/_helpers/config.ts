@@ -1,4 +1,4 @@
-import type { Page } from "@playwright/test";
+import type { Page } from '@playwright/test';
 
 type ClientConfig = {
   branding: {
@@ -19,34 +19,33 @@ type ClientConfig = {
 };
 
 export const demoValidConfig: ClientConfig = {
-  branding: { name: "Demo bank" },
-  api: { baseUrl: "https://api.example.com" },
+  branding: { name: 'Demo bank' },
+  api: { baseUrl: 'https://api.example.com' },
   modules: {
     dashboard: { enabled: true },
     transactions: { enabled: true },
-    "users-roles": { enabled: true },
+    'users-roles': { enabled: true },
   },
 };
 
 export const invalidConfigBaseUrlNotUrl: ClientConfig = {
-  branding: { name: "XSS Demo", logo: "</script><script>alert(1)</script>" },
+  branding: { name: 'XSS Demo', logo: '</script><script>alert(1)</script>' },
   modules: {
     dashboard: { enabled: true },
   },
   // baseUrl volontairement invalide pour déclencher une ZodError côté app
-  api: { baseUrl: "notaurl" },
+  api: { baseUrl: 'notaurl' },
 };
 
 export async function withClientConfig(
   page: Page,
   config: ClientConfig
 ): Promise<void> {
-  await page.route("**/client.config.json", async (route) => {
+  await page.route(/client\.config\.json/, async (route) => {
     await route.fulfill({
       status: 200,
-      contentType: "application/json",
+      contentType: 'application/json',
       body: JSON.stringify(config),
     });
   });
 }
-

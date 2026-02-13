@@ -4,10 +4,11 @@
 
 Modular BankUI Studio is a **front‑end only**, modular back‑office UI suite for banking and financial use cases.
 
+- **100% TypeScript** (`.ts` / `.tsx`) for type safety and maintainability.
 - 100% front‑end: no backend in this repository, you wire your own APIs.
-- Modular: enable/disable business modules (Dashboard, Transactions, Users & Roles, Audit, and your own).
-- Brandable: per‑client theming (logo, colors, design tokens).
-- Enterprise‑ready focus: RBAC, audit, performance, accessibility (WCAG 2.1 AA).
+- Modular: enable/disable business modules (Dashboard, Accounts, Transactions, Approvals, Users & Roles, Reports, Audit, and your own).
+- Brandable: per‑client theming (logo, colors, design tokens, session and auth config).
+- Enterprise‑ready: RBAC, audit, session timeout, security hardening (apiClient, sanitizeHtml), performance, accessibility (WCAG 2.1 AA).
 
 This project is designed as a **portfolio‑grade showcase** and as a **starter kit** for real‑world enterprise integrations:
 
@@ -23,10 +24,10 @@ This project is designed as a **portfolio‑grade showcase** and as a **starter 
 
 They care about:
 
-- how modules are wired and discovered (`moduleRegistry`, `client.config.json`),
-- how to add a new module with its routes and navigation,
+- how modules are wired and discovered (`modules/registry.ts`, `client.config.json`, ConfigGate),
+- how to add a new module with its routes and navigation (BankModule contract),
 - how to implement and override API adapters per client,
-- how to keep code tested, maintainable, and aligned with enterprise constraints.
+- how to keep code tested, maintainable, and aligned with enterprise constraints (Vitest, Playwright, test:security).
 
 #### 2. IT / Ops / Platform teams
 
@@ -75,25 +76,17 @@ flowchart TD
 
 ### How modules work
 
-Each business module exports a **module contract**:
+Each business module exports a **BankModule** contract (TypeScript interface in `core/types.ts`):
 
-```js
-export default {
-  id: "dashboard",
-  name: "Dashboard",
-  basePath: "/dashboard",
-  routes: DashboardRoutes,
-  sidebarItems: [
-    { label: "Dashboard", to: "/dashboard" },
-  ],
-};
+```ts
+// Example shape: id, name, basePath, routes, sidebarItems, permissionsRequired?, featureFlags?
 ```
 
-The `moduleRegistry`:
+The **registry** (`modules/registry.ts`):
 
-- centralizes all known modules,
-- reads `client.config.json` to determine which modules are **enabled**,
-- exposes `getEnabledModules(config?)` for the router and the application shell.
+- centralizes all known modules (dashboard, accounts, transactions, approvals, users-roles, reports, audit),
+- reads `client.config.json` (loaded and validated by ConfigGate) to determine which modules are **enabled**,
+- exposes `getEnabledModules(config?)`, `getSidebarItems(config, userPermissions)`, and `canAccessModule(module, permissions)` for the router and AppShell.
 
 This allows you to:
 
@@ -117,5 +110,3 @@ This allows you to:
 - For configuration and APIs, see `configuration/client-config.md` and `configuration/api-adapters.md`.
 - For security, accessibility, performance, and testing, see the dedicated guides.
 - For a full enterprise integration journey, see `enterprise-integration-guide.md`.
-
-

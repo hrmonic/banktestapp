@@ -4,14 +4,14 @@
 
 The **Transactions** module focuses on listing and managing payment transactions:
 
-- paginated list with advanced filters (date, amount, status, channel, etc.),  
-- single and bulk approval flows,  
+- paginated list with advanced filters (date, amount, status, channel, etc.),
+- single and bulk approval flows,
 - export capabilities (CSV/XLSX via your backend or front utilities).
 
 Typical use cases:
 
-- manual validation of high‑value payments,  
-- second‑level control for sensitive destinations,  
+- manual validation of high‑value payments,
+- second‑level control for sensitive destinations,
 - investigation of disputed or suspicious transactions.
 
 ### How it works technically
@@ -23,13 +23,13 @@ Location:
 The module exports a **BankModule contract**:
 
 ```js
-/** @type {import("../types.d.js").BankModule} */
+/** @type {import("../types").BankModule} */
 const transactionsModule = {
-  id: "transactions",
-  name: "Transactions",
-  basePath: "/transactions",
+  id: 'transactions',
+  name: 'Transactions',
+  basePath: '/transactions',
   routes: TransactionsRoutes,
-  sidebarItems: [{ label: "Transactions", to: "/transactions" }],
+  sidebarItems: [{ label: 'Transactions', to: '/transactions' }],
 };
 
 export default transactionsModule;
@@ -37,7 +37,7 @@ export default transactionsModule;
 
 Internally, `TransactionsRoutes` defines:
 
-- an index route for the listing page,  
+- an index route for the listing page,
 - optional sub‑routes (details, approvals, etc.).
 
 ### API adapters
@@ -47,7 +47,7 @@ For transactions, a typical default adapter looks like:
 
 ```js
 const transactionsAdapter = {
-  list: (params) => apiClient.get("/transactions", { params }),
+  list: (params) => apiClient.get('/transactions', { params }),
   get: (id) => apiClient.get(`/transactions/${id}`),
   approve: (id) => apiClient.post(`/transactions/${id}/approve`),
 };
@@ -59,7 +59,7 @@ You can override it to match your backend conventions:
 const customTransactionsAdapter = {
   ...transactionsAdapter,
   list: (params) =>
-    apiClient.get("/custom/txns", {
+    apiClient.get('/custom/txns', {
       params: mapParamsToCustomFormat(params),
     }),
 };
@@ -98,9 +98,7 @@ function mapParamsToCustomFormat(params) {
 
 You can:
 
-- tune filters (add fields, change default ranges),  
-- extend actions (reject, reassign, comment, attach documents),  
-- integrate workflow engines (multi‑step approvals),  
+- tune filters (add fields, change default ranges),
+- extend actions (reject, reassign, comment, attach documents),
+- integrate workflow engines (multi‑step approvals),
 - adapt columns and row rendering to match your internal standards.
-
-

@@ -1,35 +1,73 @@
 ## Architecture – Modular BankUI Studio
 
-Ce document complète le `README.md` et est pensé pour des reviewers techniques (CTO, staff engineer, lead front).
+Ce document complète le `README.md` et reflète l’état actuel de l’application (100 % TypeScript, sécurité renforcée, session, thèmes).
 
 ### Vue d’ensemble
 
 L’objectif est de fournir :
-- une **starter app** bancaire modulaire (`apps/starter`) servant de vitrine et de base de projet,
-- un **UI kit** réutilisable (`packages/ui`, exposé en `@bank/ui`),
-- une configuration client simple via `client.config.json`.
+
+- une **starter app** bancaire modulaire (`apps/starter`) en **TypeScript** (`.ts` / `.tsx`), servant de vitrine et de base de projet,
+- un **UI kit** réutilisable (`packages/ui`, exposé en `@bank/ui`), également en TypeScript,
+- une configuration client validée via **Zod** et `client.config.json`.
+
+### Structure actuelle du dépôt
 
 ```text
 banktestapp-main/
 ├── apps/
 │   └── starter/
 │       ├── src/
-│       │   ├── App.jsx           # Routing modulaire + guards
-│       │   ├── main.jsx          # Bootstrap React + providers
-│       │   ├── components/       # Layout, ErrorBoundary, Loading, etc.
-│       │   ├── modules/          # Modules métier
-│       │   ├── lib/              # Auth, RBAC, config client
-│       │   └── pages/            # Login, 404, Unauthorized
+│       │   ├── App.tsx              # Routing modulaire + guards + ConfigGate
+│       │   ├── main.tsx             # Bootstrap React + providers (Config, Auth, etc.)
+│       │   ├── core/                # Types et constantes partagés
+│       │   │   ├── constants.ts    # Rôles, permissions, constantes métier
+│       │   │   └── types.ts         # BankModule, BankModuleSidebarItem
+│       │   ├── components/          # Composants réutilisables
+│       │   │   ├── layout/AppShell.tsx
+│       │   │   ├── charts/          # MiniBarChart, MiniLineChart, TrendIndicator
+│       │   │   ├── CommandPalette/
+│       │   │   ├── ErrorBoundary, LoadingFallback, ModuleLoadingFallback
+│       │   │   ├── Breadcrumbs, EmptyState, ConfirmActionModal
+│       │   │   ├── SessionTimeoutModal, SessionTimeoutWrapper
+│       │   │   ├── ThemeSelector, ThemeToggleIcon, ShortcutHelpModal
+│       │   │   └── DemoModeBanner
+│       │   ├── lib/                 # Infra : config, auth, API, sécurité, thème
+│       │   │   ├── adapters/        # accounts, approvals, audit, dashboard, reports, transactions, usersRoles
+│       │   │   ├── api/             # apiClient.ts, apiErrors.ts, useApiClient.ts
+│       │   │   ├── auth/            # authProvider, AuthProviderPicker, demoProfileStorage, memoryStore, oidcAuthProvider
+│       │   │   ├── config/          # clientConfig.ts, ConfigContext, ConfigGate
+│       │   │   ├── security/        # rbac, profilePermissions, SafeHtml, sanitizeHtml
+│       │   │   ├── theme/           # ThemeApply, themePreferences
+│       │   │   ├── configSchema.ts   # Schéma Zod (parseClientConfig)
+│       │   │   ├── useClientConfig.ts, useFeatureFlags.ts, useQuickExport.ts
+│       │   │   └── themes.ts
+│       │   ├── modules/             # Modules métier (contrat BankModule)
+│       │   │   ├── registry.ts      # Enregistrement + getEnabledModules, getSidebarItems, canAccessModule
+│       │   │   ├── types.ts         # Réexport BankModule
+│       │   │   ├── dashboard/       # module.tsx, types.ts, useDashboardData, DashboardRoleBlock, roleCopy
+│       │   │   ├── accounts/       # module.tsx, types.ts
+│       │   │   ├── transactions/    # module.tsx, types.ts
+│       │   │   ├── approvals/      # module.tsx, types.ts
+│       │   │   ├── users-roles/     # module.tsx, types.ts
+│       │   │   ├── reports/         # module.tsx, types.ts
+│       │   │   └── audit/           # module.tsx, types.ts
+│       │   ├── pages/               # Login, LoginCallback, NotFound, Unauthorized, InvalidConfig, NoModules
+│       │   └── locales/             # i18n (optionnel)
 │       └── public/
-│           └── client.config.json
+│           └── client.config.json   # Branding, modules, api, auth, session
 │
 ├── packages/
 │   └── ui/
-│       └── src/index.js          # Design system léger (Button, Card, PageLayout, …)
+│       └── src/
+│           ├── index.tsx            # Design system (Button, Card, PageLayout, etc.)
+│           └── VirtualizedList.tsx
 │
 ├── docs/
-│   └── architecture.md           # Présent document
-└── vitest.config.mjs / playwright.config.ts / vite.config.*
+│   ├── architecture.md             # Présent document
+│   ├── api-contracts.md, security-hardening.md, security-incident-playbook.md
+│   ├── en/ et fr/                  # Documentation utilisateur et technique
+│   └── ui-accessibility-checklist.md
+└── vitest.config.mjs, playwright.config.ts, vite.config.ts
 ```
 
 ### Flux principal
@@ -37,46 +75,74 @@ banktestapp-main/
 ```mermaid
 flowchart TD
   clientConfig[client.config.json]
-  mainEntry[main.jsx]
-  appRoot[App.jsx]
+  mainEntry[main.tsx]
+  configGate[ConfigGate]
+  appRoot[App.tsx]
   appShell[AppShell]
-  moduleRegistry[moduleRegistry]
-  modules[ModulesMetier]
+  moduleRegistry[registry.ts]
+  modules[Modules métier]
   uiKit[packages/ui]
 
-  clientConfig --> appRoot
-  mainEntry --> appRoot
+  clientConfig --> configGate
+  mainEntry --> configGate
+  configGate --> appRoot
   appRoot --> moduleRegistry
   moduleRegistry --> modules
   appRoot --> appShell
   appShell --> modules
   modules --> uiKit
+  appRoot --> apiClient[apiClient]
+  configGate --> apiClient
 ```
 
-### Contrat de module
+1. **main.tsx** : monte l’app avec les providers (Config, Auth, notifications, etc.).
+2. **ConfigGate** : charge et valide `client.config.json` via `configSchema.ts` (Zod) ; en cas d’erreur affiche `InvalidConfigPage`.
+3. **App.tsx** : utilise `getEnabledModules(config)` et les permissions (RBAC) pour construire les routes et la sidebar.
+4. **AppShell** : layout, navigation, palette de commandes, timeout de session, thème.
+5. Chaque **module** expose un contrat `BankModule` (id, name, basePath, routes, sidebarItems, permissionsRequired, featureFlags) et consomme les adaptateurs d’API et `@bank/ui`.
 
-Chaque module exporte un objet de forme :
+### Contrat de module (BankModule)
 
-```js
-export default {
-  id: "dashboard",          // identifiant unique
-  name: "Dashboard",        // libellé dans la navigation
-  basePath: "/dashboard",   // préfixe de route
-  routes: DashboardRoutes,  // composant contenant les <Routes> internes
-  sidebarItems: [
-    { label: "Dashboard", to: "/dashboard" },
-  ],
-};
+Chaque module exporte un objet conforme à l’interface `BankModule` (`core/types.ts`) :
+
+```ts
+interface BankModule {
+  id: string; // ex: "dashboard"
+  name: string; // libellé navigation
+  basePath: string; // ex: "/dashboard"
+  routes: ComponentType; // composant avec <Routes> internes
+  sidebarItems: BankModuleSidebarItem[];
+  permissionsRequired?: Permission[];
+  featureFlags?: Record<string, boolean>;
+  // optionnel : adaptateurs, etc.
+}
 ```
 
-Le `moduleRegistry` :
-- centralise les modules connus,
-- lit `client.config.json` pour déterminer quels modules sont **activés**,
-- expose `getEnabledModules(config?)` utilisé par `AppShell` et le router.
+Exemple de structure de module :
 
-### Contrat de configuration client
+```text
+apps/starter/src/modules/dashboard/
+├── module.tsx        # Contrat BankModule + Routes
+├── types.ts          # Types spécifiques au module
+├── useDashboardData.ts
+├── DashboardRoleBlock.tsx
+└── roleCopy.ts
+```
 
-`public/client.config.json` :
+Le **registry** (`modules/registry.ts`) :
+
+- centralise tous les modules (dashboard, accounts, transactions, approvals, users-roles, reports, audit),
+- expose `getEnabledModules(config)` (filtré par `config.modules.*.enabled`),
+- expose `getSidebarItems(config, userPermissions)` (filtré par RBAC),
+- expose `canAccessModule(module, permissions)`.
+
+Les **feature flags** par module (ex. `exportEnabled`) sont lus via `useFeatureFlags(moduleId)` qui expose `config.modules[moduleId]`.
+
+### Configuration client et validation
+
+Fichier : `apps/starter/public/client.config.json`.
+
+Exemple (avec session et mode démo) :
 
 ```json
 {
@@ -88,8 +154,12 @@ Le `moduleRegistry` :
   "themeKey": "default",
   "modules": {
     "dashboard": { "enabled": true },
-    "accounts": { "enabled": true },
-    "transactions": { "enabled": true }
+    "accounts": { "enabled": true, "exportEnabled": true },
+    "transactions": { "enabled": true, "exportEnabled": true },
+    "approvals": { "enabled": true },
+    "users-roles": { "enabled": true },
+    "reports": { "enabled": true },
+    "audit": { "enabled": true }
   },
   "api": {
     "baseUrl": "https://api.mabanque.com",
@@ -98,66 +168,53 @@ Le `moduleRegistry` :
   "auth": {
     "type": "oidc",
     "issuer": "https://auth.mabanque.com",
-    "clientId": "backoffice-app"
+    "clientId": "backoffice-app",
+    "mode": "demo"
+  },
+  "session": {
+    "idleTimeoutMinutes": 15,
+    "warningBeforeLogoutSeconds": 60
   }
 }
 ```
 
-### Template de nouveau module métier
+- **Schéma** : `apps/starter/src/lib/configSchema.ts` définit le schéma Zod ; `parseClientConfig(raw)` valide et retourne la config typée.
+- **Typage** : `apps/starter/src/lib/config/clientConfig.ts` expose `ClientConfig`, `BrandingConfig`, `ModulesConfig`, `ApiConfig`, `AuthConfig`, `SessionConfig` et `validateClientConfig(raw)`.
+- **ConfigGate** : charge le JSON, appelle la validation ; en échec affiche `InvalidConfigPage`.
 
-Pour créer un nouveau module (ex: `limits` pour les plafonds), on conseille la structure suivante :
+### Séparation des responsabilités
 
-```text
-apps/starter/src/modules/limits/
-├── module.js        # Contrat BankModule
-└── views/…          # (optionnel) sous-pages spécifiques
-```
+- **core/** : types et constantes partagés (BankModule, permissions, rôles). Aucune dépendance aux modules ou à l’UI.
+- **modules/** : un dossier par fonctionnalité ; `module.tsx` = contrat + routes ; logique métier dans des hooks (ex. `useDashboardData`) ; pas d’appel API direct dans les vues sans passer par les adaptateurs.
+- **lib/adapters/** : couche données ; appels API ou démo ; utilisent `apiClient` (créé à partir de la config). Les erreurs remontent aux modules (message + Réessayer).
+- **lib/api/** : `apiClient` (fetch, timeout, rejet vbscript/blob/path malformés), `apiErrors`, `useApiClient`.
+- **lib/auth/** : providers (démo vs OIDC), stockage token (memoryStore, demoProfileStorage).
+- **lib/config/** : chargement, validation, contexte React (ConfigGate, ConfigContext).
+- **lib/security/** : RBAC (`canAccessModule`, `getSidebarItems`), permissions par profil (`profilePermissions`), `SafeHtml` / `sanitizeHtml` pour le contenu riche.
+- **lib/theme/** : application du thème (ThemeApply, préférences).
+- **components/** : réutilisables, présentiels ou peu de logique ; pas d’appel direct aux adaptateurs. Layout (AppShell), erreurs (ErrorBoundary), chargement (LoadingFallback, ModuleLoadingFallback), session (SessionTimeoutWrapper), thème (ThemeSelector), accessibilité (CommandPalette, ShortcutHelpModal).
+- **pages/** : écrans pleine page (Login, LoginCallback, NotFound, Unauthorized, InvalidConfig, NoModules).
 
-Exemple de `module.js` :
+### Sécurité (résumé)
 
-```js
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+- **apiClient** : rejet des URLs avec `vbscript:`, `file:`, `blob:` et chemins contenant `:` pour limiter les risques d’injection.
+- **sanitizeHtml** : nettoyage du HTML utilisateur (DOMPurify ou équivalent) ; retour chaîne vide hors navigateur.
+- **RBAC** : guards sur routes et sidebar via `permissionsRequired` et `profilePermissions`.
+- **Session** : timeout d’inactivité configurable (`session.idleTimeoutMinutes`, `session.warningBeforeLogoutSeconds`) avec avertissement utilisateur.
+- **CSP** : conception compatible avec des politiques Content-Security-Policy strictes (voir `docs/security-hardening.md`).
 
-function LimitsHome() {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Plafonds & limites</h1>
-      <p>
-        Exemple de module : gestion des plafonds carte, virements, canaux,
-        avec données servies par vos APIs.
-      </p>
-    </div>
-  );
-}
+### Tests et qualité
 
-function LimitsRoutes() {
-  return (
-    <Routes>
-      <Route index element={<LimitsHome />} />
-    </Routes>
-  );
-}
+- **Vitest + Testing Library** : tests unitaires et composants (modules, registry, config, RBAC, SafeHtml, sanitizeHtml, apiClient adversarial).
+- **Playwright** : E2E (login, dashboard, navigation, sécurité RBAC).
+- **ESLint + Prettier** : style de code, appliqué en CI.
+- Scripts : `pnpm test`, `pnpm test:e2e`, `pnpm test:security`, `pnpm lint`.
 
-/** @type {import("./types.d.js").BankModule} */
-const limitsModule = {
-  id: "limits",
-  name: "Limits",
-  basePath: "/limits",
-  routes: LimitsRoutes,
-  sidebarItems: [{ label: "Limits", to: "/limits" }],
-};
+### Créer un nouveau module
 
-export default limitsModule;
-```
+1. Créer un dossier sous `apps/starter/src/modules/<id>/` avec au minimum `module.tsx` (et optionnellement `types.ts`, hooks, sous-composants).
+2. Implémenter le contrat `BankModule` (id, name, basePath, routes, sidebarItems).
+3. Enregistrer le module dans `modules/registry.ts` (import + entrée dans `allModules`).
+4. Activer le module dans `client.config.json` (`modules.<id>.enabled: true`).
 
-Il suffit ensuite de l’enregistrer dans `modules/registry.js` et de l’activer via `client.config.json`.
-
-### Points à noter pour reviewers
-
-- **Séparation claire** entre layout, modules métier, infra (auth/RBAC/config) et UI kit.
-- **Tests** : Vitest (unitaires/component) et Playwright (E2E smoke) déjà câblés.
-- **Extensibilité** : ajout d’un module = créer un dossier dans `modules/` et l’enregistrer dans `moduleRegistry`.
-- **Orientation front-only** : aucune dépendance au backend, tous les appels sont supposés passer par des adaptateurs d’API configurables.
-
-
+La doc détaillée des contrats d’API et du design system est dans `docs/api-contracts.md`, `docs/en/` et `docs/fr/` (configuration, modules, accessibilité, intégration entreprise).

@@ -13,6 +13,25 @@ très concrètes pour durcir le déploiement de l’UI en production.
 - `X-Content-Type-Options: nosniff`
 - `Strict-Transport-Security` (HSTS) si vous forcez HTTPS
 
+#### 1.1 CSP et style-src
+
+Dans `apps/starter/index.html`, la meta CSP utilise `style-src 'self' 'unsafe-inline'` pour des raisons de compatibilité avec le build actuel (Tailwind / injection de styles courants sans nonce). En production, pour durcir :
+
+- viser `style-src 'self'` avec **nonces** ou **hashes** si le pipeline de build les génère (voir [Vite CSP](https://vitejs.dev/guide/env-and-mode.html) et la doc de votre stack pour injecter un nonce par requête) ;
+- tant que le build n’injecte pas de nonces, conserver `'unsafe-inline'` pour les styles afin d’éviter de casser le rendu ; la politique ci‑dessous reflète ce compromis.
+
+#### 1.2 Exemple de CSP pour la gateway
+
+Politique CSP stricte prête à l’emploi pour la gateway (à adapter selon vos origines API) :
+
+```
+default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.example.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
+```
+
+- **style-src** : `'unsafe-inline'` peut être retiré lorsque le build fournit des nonces ou des hashes pour les feuilles de style.
+- **connect-src** : remplacer `https://api.example.com` par les origines API réelles (et l’IDP si besoin).
+- Appliquer cette CSP en en-tête HTTP côté gateway en priorité ; la meta CSP dans `index.html` reste une couche minimale côté app.
+
 ### 2. Intégration typique derrière une gateway
 
 L’app est servie comme un bundle statique derrière une gateway :
@@ -43,4 +62,3 @@ Points d’attention :
 - valider systématiquement la config via le schéma partagé (`clientConfigSchema`) ;
 - séparer les configs par environnement (dev/préprod/prod) et contrôler les diff ;
 - préparer une procédure de rollback rapide en cas de config invalide.
-

@@ -9,12 +9,17 @@
     "test": "vitest",
     "generate:module": "node ./scripts/generate-module.mjs",
     "test:e2e": "playwright test",
+    "test:security": "vitest run apps/starter/tests/security",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint . --fix",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "prepare": "husky install"
   },
   "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "@eslint/js": "^9.9.1",
     "@playwright/test": "^1.40.0",
     "@testing-library/jest-dom": "^6.1.4",
@@ -49,13 +54,16 @@
     ]
   },
   "dependencies": {
+    "dompurify": "^3.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "pnpm": {
     "overrides": {
       "react": "18.2.0",
-      "react-dom": "18.2.0"
+      "react-dom": "18.2.0",
+      "@types/react": "^18.2.0",
+      "@types/react-dom": "^18.2.0"
     }
   }
 }

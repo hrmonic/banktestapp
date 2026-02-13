@@ -1,0 +1,145 @@
+{
+  "common": {
+    "loadErrorTitle": "Error loading",
+    "retry": "Retry",
+    "close": "Close"
+  },
+  "shortcuts": {
+    "title": "Keyboard shortcuts",
+    "search": "Open search / command palette",
+    "help": "Show this help",
+    "goToModule": "Go to {{label}}"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "densityLabel": "Density",
+    "density": {
+      "comfortable": "Comfortable",
+      "compact": "Compact"
+    }
+  },
+  "commandPalette": {
+    "ariaLabel": "Search and navigate",
+    "placeholder": "Search…",
+    "searchLabel": "Search",
+    "navigation": "Navigation",
+    "noResults": "No results",
+    "shortcutHint": "↑↓ to navigate, Enter to open, Escape to close"
+  },
+  "login": {
+    "title": "Bank backoffice demo",
+    "subtitle": "Sign in to explore the modules (sample data).",
+    "profileLabel": "Demo profile",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in...",
+    "error": "Sign-in failed. Please check your credentials."
+  },
+  "shell": {
+    "skipToContent": "Skip to main content",
+    "logout": "Log out",
+    "changeProfileHint": "To change profile: log out then choose another profile on the login page.",
+    "demoModeBanner": "Demo mode — sample data only, no impact on a real environment.",
+    "sessionActive": "Session active for {{minutes}} min.",
+    "lastLogin": "Last login: {{date}} from {{origin}}."
+  },
+  "accounts": {
+    "title": "Account management",
+    "subtitle": "Demo account list for navigation and detail screens.",
+    "statusFilter": "Status",
+    "searchPlaceholder": "Holder, IBAN, ID…",
+    "applyFilters": "Apply",
+    "noAccounts": "No accounts to display.",
+    "loadError": "Error loading accounts.",
+    "retry": "Retry"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "loadError": "Error loading dashboard.",
+    "nextActionsTitle": "To do now",
+    "nextActionsSubtitle": "Suggested next action to save time."
+  },
+  "transactions": {
+    "title": "Transaction history",
+    "subtitle": "Track recent transactions and their status. Demo data.",
+    "searchPlaceholder": "Search (ID, account, type)…",
+    "searchLabel": "Search transactions",
+    "statusFilterLabel": "Filter by status",
+    "statusAll": "All statuses",
+    "statusConfirmed": "Confirmed",
+    "statusPending": "Pending",
+    "colDate": "Date",
+    "colAccount": "Account",
+    "colType": "Type",
+    "colAmount": "Amount",
+    "colStatus": "Status",
+    "loading": "Loading transactions…",
+    "loadError": "Error loading transactions.",
+    "prev": "Previous",
+    "next": "Next",
+    "prevPage": "Previous page",
+    "nextPage": "Next page",
+    "pageInfo": "Page {{page}} / {{totalPages}} ({{count}} result)",
+    "exportCsv": "Export CSV"
+  },
+  "approvals": {
+    "title": "Approval requests",
+    "subtitle": "View requests requiring manual validation. Demo actions.",
+    "loading": "Loading approval requests…",
+    "loadError": "Error loading approval requests.",
+    "noItems": "No pending requests. All up to date.",
+    "approve": "Approve",
+    "reject": "Reject"
+  },
+  "audit": {
+    "title": "Audit log",
+    "subtitle": "Trace of main sensitive actions. Demo events.",
+    "loading": "Loading audit log…",
+    "loadError": "Error loading audit log.",
+    "searchPlaceholder": "Search (actor, action, resource)…",
+    "searchLabel": "Search audit",
+    "colTimestamp": "Timestamp",
+    "colActor": "Actor",
+    "colAction": "Action",
+    "colResource": "Resource",
+    "colDetails": "Details",
+    "prev": "Previous",
+    "next": "Next",
+    "prevPage": "Previous page",
+    "nextPage": "Next page",
+    "pageInfo": "Page {{page}} / {{totalPages}} ({{count}} event)",
+    "exportCsv": "Export CSV"
+  },
+  "usersRoles": {
+    "title": "Users and roles",
+    "subtitle": "Demo view of user management and access profiles.",
+    "loading": "Loading users…",
+    "loadError": "Error loading users.",
+    "adminOnly": "Admin only",
+    "colId": "ID",
+    "colName": "Name",
+    "colEmail": "Email",
+    "colRole": "Profile",
+    "exportCsv": "Export CSV"
+  },
+  "reports": {
+    "title": "Reports",
+    "subtitle": "Catalogue of financial and operational reports. Simulated generation and download.",
+    "loading": "Loading reports…",
+    "loadError": "Error loading reports.",
+    "generate": "Generate",
+    "generating": "Generating…",
+    "download": "Download",
+    "format": "Format"
+  },
+  "exportQuick": {
+    "label": "Export for meeting",
+    "templateAccounts": "Accounts (current list)",
+    "templateAudit7d": "Audit (last 7 days)",
+    "templateReport": "Monthly report (PDF)"
+  }
+}

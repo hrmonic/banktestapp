@@ -32,3 +32,9 @@ EXEMPLE_README.md
 # Root-level internal markdown planning/docs (never push)
 # Any new .md file created at repo root for internal plans/notes must be added here.
 
+# Internal docs: audit reports, prompts, planning (excluded from GitHub)
+docs/reports/
+
+# Test artifacts
+playwright-report/
+test-results/

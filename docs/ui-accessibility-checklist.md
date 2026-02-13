@@ -10,6 +10,10 @@ du mini design system `@bank/ui`.
 - Vérifier le contraste texte/fond (> 4.5:1 pour du texte normal).
 - S’assurer que les boutons sont atteignables au clavier (tab) et
   activables via `Enter` / `Space`.
+- Utiliser les variantes (`primary`, `secondary`, `ghost`, `subtle`) en cohérence
+  avec l’importance de l’action (primaire vs secondaire) et les états désactivés.
+- Utiliser les tailles (`sm`, `md`, `lg`) pour hiérarchiser visuellement les actions
+  sans reposer uniquement sur la couleur ou la position.
 
 ### `Card`
 
@@ -34,3 +38,9 @@ du mini design system `@bank/ui`.
 - Fournir des labels explicites ou des intitulés de colonnes
   suffisamment descriptifs.
 
+### Skip link & `PageLayout`
+
+- Le lien “Aller au contenu principal” doit être le **premier élément focusable**
+  dans la page et pointer vers `#main-content`.
+- `PageLayout` doit exposer un `h1` unique et descriptif par page;
+  vérifier la hiérarchie (`h1` unique, puis `h2`, etc.).

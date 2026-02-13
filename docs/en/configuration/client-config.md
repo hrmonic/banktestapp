@@ -4,9 +4,9 @@
 
 `client.config.json` describes how the starter app should behave for a given client and environment:
 
-- branding (name, logo, colors),  
-- which modules are enabled,  
-- API endpoints and timeouts,  
+- branding (name, logo, colors),
+- which modules are enabled,
+- API endpoints and timeouts,
 - auth provider configuration.
 
 It lives in:
@@ -46,8 +46,8 @@ and is loaded by the app at runtime.
 
 #### `branding`
 
-- `name` – display name of the bank / client.  
-- `logo` – path to the logo asset (served from `public/`).  
+- `name` – display name of the bank / client.
+- `logo` – path to the logo asset (served from `public/`).
 - `primaryColor` – main color used by the theme (can map to CSS variables).
 
 #### `themeKey` (optional)
@@ -87,7 +87,7 @@ The `moduleRegistry` uses this to build the list of enabled modules and feed the
 
 Global API settings:
 
-- `baseUrl` – base URL for the backend API.  
+- `baseUrl` – base URL for the backend API.
 - `timeout` – default timeout (ms) for calls.
 
 You can add more keys for your own client:
@@ -104,26 +104,37 @@ You can add more keys for your own client:
 
 #### `auth`
 
-Auth provider configuration, typically OIDC:
+Auth provider configuration. Two modes:
+
+- **OIDC**: `type`, `issuer`, `clientId` (and optionally `mode: "oidc"`).
+- **Demo**: `mode: "demo"` to use in-memory / localStorage profiles without a real IdP.
 
 ```json
 {
   "auth": {
     "type": "oidc",
     "issuer": "https://auth.mybank.com",
-    "clientId": "backoffice-app"
+    "clientId": "backoffice-app",
+    "mode": "demo"
   }
 }
 ```
 
 Depending on your auth library, you can extend this with scopes, redirect URIs, etc.
 
+#### `session` (optional)
+
+Idle timeout and warning before logout:
+
+- `idleTimeoutMinutes` – inactivity duration before logout (e.g. 15).
+- `warningBeforeLogoutSeconds` – delay before showing the warning modal (e.g. 60).
+
 ### Environment‑specific configs
 
 Typical pattern:
 
-- `client.config.dev.json`  
-- `client.config.preprod.json`  
+- `client.config.dev.json`
+- `client.config.preprod.json`
 - `client.config.prod.json`
 
 and a build step or deployment step that renames / injects the right file as `client.config.json`.
@@ -183,5 +194,3 @@ and a build step or deployment step that renames / injects the right file as `cl
   }
 }
 ```
-
-

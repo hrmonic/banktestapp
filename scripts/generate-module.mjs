@@ -3,45 +3,38 @@
 // Simple module generator for apps/starter.
 // Usage: pnpm generate:module my-module-id
 
-import { mkdirSync, writeFileSync, existsSync } from "fs";
-import { join } from "path";
-import { fileURLToPath } from "url";
+import { mkdirSync, writeFileSync, existsSync } from 'fs';
+import { join } from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = join(__filename, "..");
+const __dirname = join(__filename, '..');
 
 function toPascalCase(id) {
   return id
     .split(/[-_]/g)
     .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
-    .join("");
+    .join('');
 }
 
 function main() {
   const [, , rawName] = process.argv;
   if (!rawName) {
-    console.error("Usage: pnpm generate:module <module-id>");
+    console.error('Usage: pnpm generate:module <module-id>');
     process.exit(1);
   }
 
   const moduleId = rawName.toLowerCase();
   const moduleDir = join(
     __dirname,
-    "..",
-    "apps",
-    "starter",
-    "src",
-    "modules",
-    moduleId,
+    '..',
+    'apps',
+    'starter',
+    'src',
+    'modules',
+    moduleId
   );
-  const testsDir = join(
-    __dirname,
-    "..",
-    "apps",
-    "starter",
-    "tests",
-    "modules",
-  );
+  const testsDir = join(__dirname, '..', 'apps', 'starter', 'tests', 'modules');
 
   if (existsSync(moduleDir)) {
     console.error(`Module directory already exists: ${moduleDir}`);
@@ -125,19 +118,18 @@ describe("${moduleId} module", () => {
 });
 `;
 
-  writeFileSync(join(moduleDir, "module.jsx"), moduleJsx, "utf-8");
-  writeFileSync(join(moduleDir, "module.js"), barrelJs, "utf-8");
+  writeFileSync(join(moduleDir, 'module.jsx'), moduleJsx, 'utf-8');
+  writeFileSync(join(moduleDir, 'module.js'), barrelJs, 'utf-8');
   writeFileSync(
     join(testsDir, `${pascalName}Module.test.jsx`),
     testFile,
-    "utf-8",
+    'utf-8'
   );
 
   console.log(`Module "${moduleId}" generated at ${moduleDir}`);
   console.log(
-    `Remember to add "${moduleId}" to the module registry and client.config.json if needed.`,
+    `Remember to add "${moduleId}" to the module registry and client.config.json if needed.`
   );
 }
 
 main();
-

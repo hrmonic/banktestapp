@@ -4,14 +4,14 @@
 
 Le module **Audit** expose les logs d’activité utilisateur et les fonctions de traçabilité :
 
-- journaux d’actions par utilisateur, ressource, module et action,  
-- filtres par date, utilisateur, type de ressource, statut, etc.,  
+- journaux d’actions par utilisateur, ressource, module et action,
+- filtres par date, utilisateur, type de ressource, statut, etc.,
 - vues adaptées aux investigations et aux contrôles internes.
 
 Cas d’usage typiques :
 
-- reconstituer les actions réalisées sur un compte client,  
-- préparer des audits internes/externes et contrôles de conformité,  
+- reconstituer les actions réalisées sur un compte client,
+- préparer des audits internes/externes et contrôles de conformité,
 - suivre l’accès aux fonctionnalités sensibles (approbations, dépassements de limites, overrides).
 
 ### Comment ça marche techniquement
@@ -23,13 +23,13 @@ Localisation :
 Le module exporte un **contrat BankModule** :
 
 ```js
-/** @type {import("../types.d.js").BankModule} */
+/** @type {import("../types").BankModule} */
 const auditModule = {
-  id: "audit",
-  name: "Audit",
-  basePath: "/audit",
+  id: 'audit',
+  name: 'Audit',
+  basePath: '/audit',
   routes: AuditRoutes,
-  sidebarItems: [{ label: "Audit", to: "/audit" }],
+  sidebarItems: [{ label: 'Audit', to: '/audit' }],
 };
 
 export default auditModule;
@@ -43,7 +43,7 @@ Exemple d’adaptateur générique :
 
 ```js
 const auditAdapter = {
-  list: (params) => apiClient.get("/audit/logs", { params }),
+  list: (params) => apiClient.get('/audit/logs', { params }),
   get: (id) => apiClient.get(`/audit/logs/${id}`),
 };
 ```
@@ -70,10 +70,10 @@ Vous pouvez le surcharger pour refléter votre stockage de logs (SIEM, base d’
 const siemAuditAdapter = {
   list: (params) =>
     siemClient.search({
-      index: "bank-audit",
+      index: 'bank-audit',
       query: buildSiemQuery(params),
     }),
-  get: (id) => siemClient.get({ index: "bank-audit", id }),
+  get: (id) => siemClient.get({ index: 'bank-audit', id }),
 };
 ```
 
@@ -81,8 +81,6 @@ const siemAuditAdapter = {
 
 Vous pouvez :
 
-- ajouter des colonnes et vues spécifiques à votre modèle d’audit,  
-- relier les entrées d’audit aux écrans back‑office clés (client, compte, transaction),  
+- ajouter des colonnes et vues spécifiques à votre modèle d’audit,
+- relier les entrées d’audit aux écrans back‑office clés (client, compte, transaction),
 - ajouter des exports ou des intégrations avec vos processus d’archivage de preuves.
-
-

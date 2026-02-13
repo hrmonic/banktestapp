@@ -3,7 +3,7 @@
 This document describes the **canonical contract** for feature modules used in the starter app
 under `apps/starter/src/modules/`.
 
-It is the technical source of truth that mirrors `apps/starter/src/modules/types.d.js`.
+It is the technical source of truth that mirrors `apps/starter/src/core/types.ts` (re-exported by `modules/types.ts`).
 
 ---
 
@@ -87,7 +87,7 @@ It is the technical source of truth that mirrors `apps/starter/src/modules/types
 
   ```js
   const transactionsAdapter = {
-    list: (params) => apiClient.get("/transactions", { params }),
+    list: (params) => apiClient.get('/transactions', { params }),
     get: (id) => apiClient.get(`/transactions/${id}`),
     approve: (id) => apiClient.post(`/transactions/${id}/approve`),
   };
@@ -107,5 +107,3 @@ When you create or update a module:
 - optional `permissionsRequired`, `featureFlags` and `apiAdapter` are used consistently where needed.
 - when a module is considered \"sensitive\" (e.g. `users-roles`, `audit`), `permissionsRequired`
   should explicitly reflect the roles allowed to access it.
-
-

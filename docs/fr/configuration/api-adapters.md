@@ -4,8 +4,8 @@
 
 Les adaptateurs d’API isolent chaque module des détails spécifiques au backend :
 
-- les modules appellent les adaptateurs, pas directement le client HTTP,  
-- les surcharges par client sont simples et localisées,  
+- les modules appellent les adaptateurs, pas directement le client HTTP,
+- les surcharges par client sont simples et localisées,
 - les contrats restent stables alors que les implémentations peuvent varier.
 
 ### Pattern d’adaptateur par défaut
@@ -14,7 +14,7 @@ Chaque module expose un adaptateur par défaut, par exemple pour Transactions :
 
 ```js
 const transactionsAdapter = {
-  list: (params) => apiClient.get("/transactions", { params }),
+  list: (params) => apiClient.get('/transactions', { params }),
   get: (id) => apiClient.get(`/transactions/${id}`),
   approve: (id) => apiClient.post(`/transactions/${id}/approve`),
 };
@@ -24,7 +24,7 @@ Les vues ne dépendent que de cet adaptateur :
 
 ```js
 const { data, isLoading } = useQuery({
-  queryKey: ["transactions", filters],
+  queryKey: ['transactions', filters],
   queryFn: () => transactionsAdapter.list(filters),
 });
 ```
@@ -33,17 +33,17 @@ const { data, isLoading } = useQuery({
 
 Pour intégrer un backend spécifique, vous :
 
-1. créez un adaptateur custom,  
+1. créez un adaptateur custom,
 2. le câblez dans le module à la place du défaut.
 
 Exemple :
 
 ```js
-import { apiClient } from "../lib/apiClient";
-import { mapParamsToCustomFormat } from "./mapping";
+import { apiClient } from '../lib/apiClient';
+import { mapParamsToCustomFormat } from './mapping';
 
 const defaultAdapter = {
-  list: (params) => apiClient.get("/transactions", { params }),
+  list: (params) => apiClient.get('/transactions', { params }),
   get: (id) => apiClient.get(`/transactions/${id}`),
   approve: (id) => apiClient.post(`/transactions/${id}/approve`),
 };
@@ -51,7 +51,7 @@ const defaultAdapter = {
 export const customTransactionsAdapter = {
   ...defaultAdapter,
   list: (params) =>
-    apiClient.get("/custom/txns", {
+    apiClient.get('/custom/txns', {
       params: mapParamsToCustomFormat(params),
     }),
 };
@@ -63,7 +63,7 @@ export const customTransactionsAdapter = {
 
 ```js
 export const dashboardAdapter = {
-  getKpis: (params) => apiClient.get("/dashboard/kpis", { params }),
+  getKpis: (params) => apiClient.get('/dashboard/kpis', { params }),
 };
 ```
 
@@ -71,8 +71,8 @@ export const dashboardAdapter = {
 
 ```js
 export const usersRolesAdapter = {
-  listUsers: () => iamClient.get("/users"),
-  listRoles: () => iamClient.get("/roles"),
+  listUsers: () => iamClient.get('/users'),
+  listRoles: () => iamClient.get('/roles'),
   assignRole: (userId, roleId) =>
     iamClient.post(`/users/${userId}/roles`, { roleId }),
 };
@@ -82,7 +82,7 @@ export const usersRolesAdapter = {
 
 ```js
 export const auditAdapter = {
-  list: (params) => apiClient.get("/audit/logs", { params }),
+  list: (params) => apiClient.get('/audit/logs', { params }),
   get: (id) => apiClient.get(`/audit/logs/${id}`),
 };
 ```
@@ -91,9 +91,7 @@ export const auditAdapter = {
 
 ### Bonnes pratiques
 
-- Garder les interfaces des adaptateurs **stables** entre clients.  
-- Ne pas exposer de détails backend‑spécifiques (noms de champs, formats d’erreurs) dans les vues.  
-- Centraliser la gestion des erreurs, retries et logs dans les adaptateurs ou `apiClient`.  
+- Garder les interfaces des adaptateurs **stables** entre clients.
+- Ne pas exposer de détails backend‑spécifiques (noms de champs, formats d’erreurs) dans les vues.
+- Centraliser la gestion des erreurs, retries et logs dans les adaptateurs ou `apiClient`.
 - Couvrir les adaptateurs par des tests lorsque les workflows sont critiques (voir `testing-and-quality.md`).
-
-

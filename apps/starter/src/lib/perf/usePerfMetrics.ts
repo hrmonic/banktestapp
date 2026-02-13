@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 /**
  * Hook de mesure très simple pour observer le temps de rendu
@@ -9,17 +9,16 @@ import { useEffect } from "react";
  */
 export function usePerfMetrics(label: string) {
   useEffect(() => {
-    if (import.meta.env.MODE !== "development") return;
+    if (import.meta.env.MODE !== 'development') return;
 
     const start = performance.now();
 
     const id = window.requestAnimationFrame(() => {
       const duration = performance.now() - start;
-      // eslint-disable-next-line no-console
+
       console.info(`[perf] ${label} first-paint ~${duration.toFixed(1)}ms`);
     });
 
     return () => window.cancelAnimationFrame(id);
   }, [label]);
 }
-

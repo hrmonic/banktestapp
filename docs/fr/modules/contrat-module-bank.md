@@ -3,7 +3,7 @@
 Ce document décrit le **contrat canonique** des modules métier utilisés dans l’app starter
 `apps/starter/src/modules/`.
 
-Il est la référence alignée avec `apps/starter/src/modules/types.d.js`.
+Il est la référence alignée avec `apps/starter/src/core/types.ts` (réexporté par `modules/types.ts`).
 
 ---
 
@@ -82,5 +82,3 @@ Pour chaque nouveau module ou refactor :
 - `sidebarItems` est correctement renseigné pour la navigation,
 - les propriétés optionnelles (`permissionsRequired`, `featureFlags`, `apiAdapter`) sont utilisées de façon cohérente.
 - pour les modules sensibles (`users-roles`, `audit`, etc.), `permissionsRequired` doit refléter explicitement les rôles autorisés.
-
-

@@ -8,6 +8,7 @@ export default tseslint.config(
   { ignores: ['dist'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    // Projet TypeScript-first : seuls .ts/.tsx sont lintés ; pas de couverture .js/.jsx.
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,

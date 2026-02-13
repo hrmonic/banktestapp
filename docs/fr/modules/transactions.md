@@ -4,14 +4,14 @@
 
 Le module **Transactions** est dédié à la liste et à la gestion des opérations de paiement :
 
-- liste paginée avec filtres avancés (date, montant, statut, canal, etc.),  
-- workflows d’actions (approbation unitaire ou en lot),  
+- liste paginée avec filtres avancés (date, montant, statut, canal, etc.),
+- workflows d’actions (approbation unitaire ou en lot),
 - capacités d’export (CSV/XLSX via vos APIs ou utilitaires front).
 
 Cas d’usage typiques :
 
-- validation manuelle de paiements à haut montant,  
-- contrôle de second niveau pour des destinations sensibles,  
+- validation manuelle de paiements à haut montant,
+- contrôle de second niveau pour des destinations sensibles,
 - investigation d’opérations litigieuses ou suspectes.
 
 ### Comment ça marche techniquement
@@ -23,13 +23,13 @@ Localisation :
 Le module exporte un **contrat BankModule** :
 
 ```js
-/** @type {import("../types.d.js").BankModule} */
+/** @type {import("../types").BankModule} */
 const transactionsModule = {
-  id: "transactions",
-  name: "Transactions",
-  basePath: "/transactions",
+  id: 'transactions',
+  name: 'Transactions',
+  basePath: '/transactions',
   routes: TransactionsRoutes,
-  sidebarItems: [{ label: "Transactions", to: "/transactions" }],
+  sidebarItems: [{ label: 'Transactions', to: '/transactions' }],
 };
 
 export default transactionsModule;
@@ -37,7 +37,7 @@ export default transactionsModule;
 
 `TransactionsRoutes` définit :
 
-- une route index pour la liste,  
+- une route index pour la liste,
 - éventuellement des sous‑routes (détail, approbation, etc.).
 
 ### Adaptateurs d’API
@@ -47,7 +47,7 @@ Pour Transactions, un adaptateur par défaut typique :
 
 ```js
 const transactionsAdapter = {
-  list: (params) => apiClient.get("/transactions", { params }),
+  list: (params) => apiClient.get('/transactions', { params }),
   get: (id) => apiClient.get(`/transactions/${id}`),
   approve: (id) => apiClient.post(`/transactions/${id}/approve`),
 };
@@ -59,7 +59,7 @@ Vous pouvez le surcharger pour coller aux conventions de votre backend :
 const customTransactionsAdapter = {
   ...transactionsAdapter,
   list: (params) =>
-    apiClient.get("/custom/txns", {
+    apiClient.get('/custom/txns', {
       params: mapParamsToCustomFormat(params),
     }),
 };
@@ -98,9 +98,7 @@ function mapParamsToCustomFormat(params) {
 
 Vous pouvez :
 
-- ajuster les filtres (champs supplémentaires, valeurs par défaut),  
-- étendre les actions (reject, reassign, commentaire, pièces jointes),  
-- intégrer un moteur de workflow (approbations multi‑niveaux),  
+- ajuster les filtres (champs supplémentaires, valeurs par défaut),
+- étendre les actions (reject, reassign, commentaire, pièces jointes),
+- intégrer un moteur de workflow (approbations multi‑niveaux),
 - adapter colonnes et rendu de lignes à vos standards internes.
-
-

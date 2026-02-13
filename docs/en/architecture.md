@@ -1,10 +1,13 @@
 ## Architecture
 
-### High‑level goals
+This document reflects the current state of the application: **100% TypeScript**, hardened security, session management, and theming.
 
-- Provide a **modular front‑end** for banking back‑offices.  
-- Separate **business modules**, **layout/infrastructure**, and **UI kit**.  
-- Allow per‑client configuration without code changes for basic scenarios.
+### High-level goals
+
+- Provide a **modular front-end** for banking back-offices.
+- Separate **business modules**, **layout/infrastructure**, and **UI kit**.
+- Allow per-client configuration without code changes (branding, modules, API, auth, session).
+- Full **TypeScript** (`.ts` / `.tsx`) for type safety and maintainability.
 
 ### Repository layout
 
@@ -13,20 +16,44 @@ banktestapp-main/
 ├── apps/
 │   └── starter/
 │       ├── src/
-│       │   ├── App.jsx           # Modular routing + guards
-│       │   ├── main.jsx          # React bootstrap + providers
-│       │   ├── components/       # Layout, ErrorBoundary, Loading, etc.
-│       │   ├── modules/          # Business feature modules
-│       │   ├── lib/              # Auth, RBAC, client config
-│       │   └── pages/            # Login, 404, Unauthorized
+│       │   ├── App.tsx              # Modular routing + guards + ConfigGate
+│       │   ├── main.tsx             # React bootstrap + providers
+│       │   ├── core/                # Shared types and constants
+│       │   │   ├── constants.ts    # Roles, permissions
+│       │   │   └── types.ts         # BankModule, BankModuleSidebarItem
+│       │   ├── components/          # Reusable components
+│       │   │   ├── layout/AppShell.tsx
+│       │   │   ├── charts/          # MiniBarChart, MiniLineChart, TrendIndicator
+│       │   │   ├── CommandPalette/, ErrorBoundary, LoadingFallback, etc.
+│       │   │   ├── SessionTimeoutModal, SessionTimeoutWrapper
+│       │   │   ├── ThemeSelector, ThemeToggleIcon, ShortcutHelpModal, DemoModeBanner
+│       │   │   └── Breadcrumbs, EmptyState, ConfirmActionModal
+│       │   ├── lib/                 # Config, auth, API, security, theme
+│       │   │   ├── adapters/        # accounts, approvals, audit, dashboard, reports, transactions, usersRoles
+│       │   │   ├── api/             # apiClient.ts, apiErrors.ts, useApiClient.ts
+│       │   │   ├── auth/            # authProvider, AuthProviderPicker, demoProfileStorage, memoryStore, oidcAuthProvider
+│       │   │   ├── config/          # clientConfig.ts, ConfigContext, ConfigGate
+│       │   │   ├── security/        # rbac, profilePermissions, SafeHtml, sanitizeHtml
+│       │   │   ├── theme/           # ThemeApply, themePreferences
+│       │   │   ├── configSchema.ts   # Zod schema (parseClientConfig)
+│       │   │   └── useClientConfig.ts, useFeatureFlags.ts, useQuickExport.ts, themes.ts
+│       │   ├── modules/             # Business modules (BankModule contract)
+│       │   │   ├── registry.ts      # getEnabledModules, getSidebarItems, canAccessModule
+│       │   │   ├── types.ts
+│       │   │   ├── dashboard/        # module.tsx, types.ts, useDashboardData, DashboardRoleBlock, roleCopy
+│       │   │   ├── accounts/, transactions/, approvals/, users-roles/, reports/, audit/
+│       │   ├── pages/               # Login, LoginCallback, NotFound, Unauthorized, InvalidConfig, NoModules
+│       │   └── locales/             # i18n (optional)
 │       └── public/
-│           └── client.config.json
+│           └── client.config.json   # Branding, modules, api, auth, session
 │
 ├── packages/
 │   └── ui/
-│       └── src/index.js          # Lightweight design system (@bank/ui)
+│       └── src/
+│           ├── index.tsx            # Design system (Button, Card, PageLayout, etc.)
+│           └── VirtualizedList.tsx
 │
-└── vitest.config.mjs / playwright.config.ts / vite.config.*
+└── vitest.config.mjs, playwright.config.ts, vite.config.ts
 ```
 
 ### Main runtime flow
@@ -34,15 +61,17 @@ banktestapp-main/
 ```mermaid
 flowchart TD
   clientConfig[client.config.json]
-  mainEntry[main.jsx]
-  appRoot[App.jsx]
+  mainEntry[main.tsx]
+  configGate[ConfigGate]
+  appRoot[App.tsx]
   appShell[AppShell]
-  moduleRegistry[ModuleRegistry]
+  moduleRegistry[registry.ts]
   modules[BusinessModules]
-  uiKit[UI_Kit_at-bank-ui]
+  uiKit[packages/ui]
 
-  clientConfig --> appRoot
-  mainEntry --> appRoot
+  clientConfig --> configGate
+  mainEntry --> configGate
+  configGate --> appRoot
   appRoot --> moduleRegistry
   moduleRegistry --> modules
   appRoot --> appShell
@@ -50,56 +79,53 @@ flowchart TD
   modules --> uiKit
 ```
 
-1. `main.jsx` bootstraps React and providers.  
-2. `App.jsx` loads `client.config.json`, reads enabled modules via `moduleRegistry`.  
-3. `AppShell` renders layout and navigation using the list of enabled modules.  
-4. Each module renders its own nested routes and views, consuming `@bank/ui` components.
+1. **main.tsx** bootstraps React and providers (Config, Auth, notifications).
+2. **ConfigGate** loads and validates `client.config.json` via Zod (`configSchema.ts`); on failure shows `InvalidConfigPage`.
+3. **App.tsx** uses `getEnabledModules(config)` and RBAC to build routes and sidebar.
+4. **AppShell** provides layout, navigation, command palette, session timeout, theme.
+5. Each **module** implements the `BankModule` contract and consumes adapters and `@bank/ui`.
 
-### Module contract
+### Module contract (BankModule)
 
-Each module exports an object with the following shape:
+Each module exports an object conforming to `BankModule` (`core/types.ts`):
 
-```js
-export default {
-  id: "dashboard",          // unique identifier
-  name: "Dashboard",        // label in navigation
-  basePath: "/dashboard",   // route prefix
-  routes: DashboardRoutes,  // component with internal <Routes>
-  sidebarItems: [
-    { label: "Dashboard", to: "/dashboard" },
-  ],
-};
+```ts
+interface BankModule {
+  id: string;
+  name: string;
+  basePath: string;
+  routes: ComponentType;
+  sidebarItems: BankModuleSidebarItem[];
+  permissionsRequired?: Permission[];
+  featureFlags?: Record<string, boolean>;
+}
 ```
 
-Typical folder structure for a module:
+Typical folder:
 
 ```text
-apps/starter/src/modules/limits/
-├── module.js        # BankModule contract
-└── views/…          # optional specific sub‑pages
+apps/starter/src/modules/dashboard/
+├── module.tsx        # BankModule contract + Routes
+├── types.ts
+├── useDashboardData.ts
+├── DashboardRoleBlock.tsx
+└── roleCopy.ts
 ```
 
-### Module registry
+The **registry** (`modules/registry.ts`):
 
-The `moduleRegistry` is responsible for:
+- centralizes all modules (dashboard, accounts, transactions, approvals, users-roles, reports, audit),
+- exposes `getEnabledModules(config)` (filtered by `config.modules.*.enabled`),
+- exposes `getSidebarItems(config, userPermissions)` (filtered by RBAC),
+- exposes `canAccessModule(module, permissions)`.
 
-- centralizing known modules,  
-- reading `client.config.json` to know which ones are enabled,  
-- exposing `getEnabledModules(config?)` for:
-  - the router, to compute `<Routes>`,  
-  - the layout, to build navigation items.
+**Feature flags** per module (e.g. `exportEnabled`) are read via `useFeatureFlags(moduleId)`.
 
-This allows:
+### Client configuration
 
-- per‑client and per‑environment configuration (`modules.*.enabled`),  
-- easy addition of new modules by:
-  - creating a folder under `modules/`,  
-  - implementing the module contract,  
-  - registering it in the registry.
+File: `apps/starter/public/client.config.json`. Validated with Zod in `lib/configSchema.ts`; types in `lib/config/clientConfig.ts` (`ClientConfig`, `AuthConfig`, `SessionConfig`, etc.).
 
-### Client configuration contract
-
-`public/client.config.json` describes what the app should look like and which modules it should expose:
+Example with session and demo auth:
 
 ```json
 {
@@ -111,50 +137,51 @@ This allows:
   "themeKey": "default",
   "modules": {
     "dashboard": { "enabled": true },
-    "accounts": { "enabled": true },
-    "transactions": { "enabled": true }
+    "accounts": { "enabled": true, "exportEnabled": true },
+    "transactions": { "enabled": true },
+    "approvals": { "enabled": true },
+    "users-roles": { "enabled": true },
+    "reports": { "enabled": true },
+    "audit": { "enabled": true }
   },
-  "api": {
-    "baseUrl": "https://api.mybank.com",
-    "timeout": 8000
-  },
+  "api": { "baseUrl": "https://api.mybank.com", "timeout": 8000 },
   "auth": {
     "type": "oidc",
     "issuer": "https://auth.mybank.com",
-    "clientId": "backoffice-app"
-  }
+    "clientId": "backoffice-app",
+    "mode": "demo"
+  },
+  "session": { "idleTimeoutMinutes": 15, "warningBeforeLogoutSeconds": 60 }
 }
 ```
 
-See `configuration/client-config.md` for a full reference.
+See `configuration/client-config.md` for full reference.
 
 ### Separation of concerns
 
-- **Layout & shell**  
-  - `AppShell`, navigation, header, sidebars, error boundaries.
-- **Business modules**  
-  - Located in `apps/starter/src/modules/`,  
-  - encapsulate their own routing, views and API usage.
-- **Infrastructure**  
-  - Auth, RBAC, client configuration loading, global error handling.
-- **UI kit**  
-  - Reusable visual components (`Button`, `Card`, `PageLayout`, etc.) in `@bank/ui`.
+- **core/** – Shared types and constants; no dependency on modules or UI.
+- **modules/** – One folder per feature; `module.tsx` = contract + routes; business logic in hooks; data via adapters only.
+- **lib/adapters/** – Data layer; API calls or demo data; use `apiClient`.
+- **lib/api/** – apiClient (fetch, timeout, safe URL handling), apiErrors, useApiClient.
+- **lib/auth/** – Providers (demo vs OIDC), token storage (memoryStore, demoProfileStorage).
+- **lib/config/** – Load, validate (Zod), React context (ConfigGate, ConfigContext).
+- **lib/security/** – RBAC, profile permissions, SafeHtml, sanitizeHtml.
+- **lib/theme/** – Theme application and preferences.
+- **components/** – Reusable, presentational; no direct adapter calls.
+- **pages/** – Full-page screens (Login, LoginCallback, NotFound, Unauthorized, InvalidConfig, NoModules).
 
-This separation lets teams:
+### Security (summary)
 
-- evolve modules independently,  
-- share a consistent UI across projects,  
-- publish and version the UI kit separately from the starter app.
+- **apiClient**: Rejects URLs with `vbscript:`, `file:`, `blob:` and malformed paths.
+- **sanitizeHtml**: Sanitizes user HTML (DOMPurify); empty string outside browser.
+- **RBAC**: Route and sidebar guards via `permissionsRequired` and `profilePermissions`.
+- **Session**: Configurable idle timeout and warning before logout.
+- **CSP**: Designed for strict Content-Security-Policy (see `docs/security-hardening.md`).
 
-### Testing & quality hooks
+### Testing & quality
 
-- **Vitest + Testing Library**  
-  - component and unit tests (e.g. `App.jsx`, `moduleRegistry`).  
-- **Playwright**  
-  - E2E smoke tests (login → dashboard).  
-- **ESLint + Prettier**  
-  - consistent code style, enforced in CI.
+- **Vitest + Testing Library** – Unit and component tests (modules, registry, config, RBAC, SafeHtml, sanitizeHtml, apiClient).
+- **Playwright** – E2E (login, dashboard, navigation, RBAC security).
+- **ESLint + Prettier** – Code style, enforced in CI.
 
-See `testing-and-quality.md` for more details.
-
-
+See `testing-and-quality.md` for details.

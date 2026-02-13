@@ -1,0 +1,145 @@
+{
+  "common": {
+    "loadErrorTitle": "Erreur de chargement",
+    "retry": "Réessayer",
+    "close": "Fermer"
+  },
+  "shortcuts": {
+    "title": "Raccourcis clavier",
+    "search": "Ouvrir la recherche / palette de commandes",
+    "help": "Afficher cette aide",
+    "goToModule": "Aller à {{label}}"
+  },
+  "theme": {
+    "label": "Thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système",
+    "densityLabel": "Densité",
+    "density": {
+      "comfortable": "Confortable",
+      "compact": "Compact"
+    }
+  },
+  "commandPalette": {
+    "ariaLabel": "Rechercher et naviguer",
+    "placeholder": "Rechercher…",
+    "searchLabel": "Recherche",
+    "navigation": "Navigation",
+    "noResults": "Aucun résultat",
+    "shortcutHint": "↑↓ pour naviguer, Entrée pour ouvrir, Échap pour fermer"
+  },
+  "login": {
+    "title": "Backoffice bancaire démo",
+    "subtitle": "Connectez-vous pour explorer les modules (données factices).",
+    "profileLabel": "Profil de démo",
+    "emailLabel": "Email",
+    "passwordLabel": "Mot de passe",
+    "submit": "Se connecter",
+    "submitting": "Connexion...",
+    "error": "Échec de la connexion. Veuillez vérifier vos identifiants."
+  },
+  "shell": {
+    "skipToContent": "Aller au contenu principal",
+    "logout": "Déconnexion",
+    "changeProfileHint": "Pour changer de profil : déconnectez-vous puis choisissez un autre profil sur la page de connexion.",
+    "demoModeBanner": "Mode démo — données fictives, aucun impact sur un environnement réel.",
+    "sessionActive": "Session active depuis {{minutes}} min.",
+    "lastLogin": "Dernière connexion : {{date}} depuis {{origin}}."
+  },
+  "accounts": {
+    "title": "Gestion des comptes",
+    "subtitle": "Liste de comptes de démo, pour illustrer la navigation et les écrans de détail.",
+    "statusFilter": "Statut",
+    "searchPlaceholder": "Titulaire, IBAN, ID…",
+    "applyFilters": "Appliquer",
+    "noAccounts": "Aucun compte à afficher pour le moment.",
+    "loadError": "Erreur lors du chargement des comptes.",
+    "retry": "Réessayer"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "loadError": "Erreur lors du chargement du tableau de bord.",
+    "nextActionsTitle": "À faire maintenant",
+    "nextActionsSubtitle": "Prochaine action suggérée pour gagner du temps."
+  },
+  "transactions": {
+    "title": "Historique des transactions",
+    "subtitle": "Suivez les transactions récentes et leur statut. Données de démonstration.",
+    "searchPlaceholder": "Recherche (ID, compte, type)…",
+    "searchLabel": "Rechercher une transaction",
+    "statusFilterLabel": "Filtrer par statut",
+    "statusAll": "Tous les statuts",
+    "statusConfirmed": "Confirmée",
+    "statusPending": "En attente",
+    "colDate": "Date",
+    "colAccount": "Compte",
+    "colType": "Type",
+    "colAmount": "Montant",
+    "colStatus": "Statut",
+    "loading": "Chargement des transactions…",
+    "loadError": "Erreur lors du chargement des transactions.",
+    "prev": "Précédent",
+    "next": "Suivant",
+    "prevPage": "Page précédente",
+    "nextPage": "Page suivante",
+    "pageInfo": "Page {{page}} / {{totalPages}} ({{count}} résultat)",
+    "exportCsv": "Exporter CSV"
+  },
+  "approvals": {
+    "title": "Demandes d'approbation",
+    "subtitle": "Visualisez les demandes nécessitant une validation manuelle. Actions démonstratives.",
+    "loading": "Chargement des demandes d'approbation…",
+    "loadError": "Erreur lors du chargement des demandes.",
+    "noItems": "Aucune demande en attente. Tout est à jour.",
+    "approve": "Approuver",
+    "reject": "Rejeter"
+  },
+  "audit": {
+    "title": "Journal d'audit",
+    "subtitle": "Trace des principales actions sensibles. Événements à titre de démonstration.",
+    "loading": "Chargement du journal d'audit…",
+    "loadError": "Erreur lors du chargement du journal d'audit.",
+    "searchPlaceholder": "Recherche (acteur, action, ressource)…",
+    "searchLabel": "Rechercher dans l'audit",
+    "colTimestamp": "Horodatage",
+    "colActor": "Acteur",
+    "colAction": "Action",
+    "colResource": "Ressource",
+    "colDetails": "Détails",
+    "prev": "Précédent",
+    "next": "Suivant",
+    "prevPage": "Page précédente",
+    "nextPage": "Page suivante",
+    "pageInfo": "Page {{page}} / {{totalPages}} ({{count}} événement)",
+    "exportCsv": "Exporter CSV"
+  },
+  "usersRoles": {
+    "title": "Utilisateurs et rôles",
+    "subtitle": "Vue de démonstration de la gestion des utilisateurs et de leurs profils d'accès.",
+    "loading": "Chargement des utilisateurs…",
+    "loadError": "Erreur lors du chargement des utilisateurs.",
+    "adminOnly": "Admin only",
+    "colId": "ID",
+    "colName": "Nom",
+    "colEmail": "Email",
+    "colRole": "Profil",
+    "exportCsv": "Exporter CSV"
+  },
+  "reports": {
+    "title": "Rapports",
+    "subtitle": "Catalogue de rapports financiers et opérationnels. Génération et téléchargement simulés.",
+    "loading": "Chargement des rapports…",
+    "loadError": "Erreur lors du chargement des rapports.",
+    "generate": "Générer",
+    "generating": "Génération…",
+    "download": "Télécharger",
+    "format": "Format"
+  },
+  "exportQuick": {
+    "label": "Exporter pour réunion",
+    "templateAccounts": "Comptes (liste actuelle)",
+    "templateAudit7d": "Audit (7 derniers jours)",
+    "templateReport": "Rapport mensuel (PDF)"
+  }
+}

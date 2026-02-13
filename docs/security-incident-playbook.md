@@ -41,4 +41,3 @@ Après résolution de l'incident :
   avec les mesures préventives identifiées ;
 - ajouter ou renforcer les tests (unitaires, intégration, E2E)
   qui auraient permis de détecter le problème plus tôt.
-

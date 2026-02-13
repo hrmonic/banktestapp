@@ -1,41 +1,38 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import { resolve } from "path";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      "@": resolve(__dirname, "./src"),
-      "@bank/ui": resolve(__dirname, "../../packages/ui/src/index.jsx"),
+      '@': resolve(__dirname, './src'),
+      '@bank/ui': resolve(__dirname, '../../packages/ui/src/index.tsx'),
     },
   },
   server: { port: 5173, host: true },
   /**
-   * Configure esbuild so that .js files in src/ can contain JSX.
-   * This matches our usage in files like authProvider.js et rbac.js,
-   * and keeps JSX support consistent avec les fichiers .jsx.
+   * Par défaut Vite utilise les loaders esbuild adaptés (.ts, .tsx, .js, .jsx).
+   * Ne pas forcer un loader unique pour tout le src afin que .ts/.tsx soient
+   * compilés en TypeScript. Les fichiers .js contenant du JSX doivent être
+   * en .jsx ou .tsx (migration vers 100 % TS).
    */
-  esbuild: {
-    loader: "jsx",
-    include: /src\/.*\.[jt]sx?$/,
-  },
   build: {
-    outDir: "dist",
+    outDir: 'dist',
     sourcemap: true,
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ["react", "react-dom"],
-          router: ["react-router-dom"],
-          query: ["@tanstack/react-query"],
-          forms: ["react-hook-form", "zod"],
-          i18n: ["i18next", "react-i18next"],
-          ui: ["@bank/ui"],
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          query: ['@tanstack/react-query'],
+          forms: ['react-hook-form', 'zod'],
+          i18n: ['i18next', 'react-i18next'],
+          ui: ['@bank/ui'],
         },
       },
     },
   },
   define: { __APP_VERSION__: JSON.stringify(process.env.npm_package_version) },
-  optimizeDeps: { include: ["@bank/ui"] },
+  optimizeDeps: { include: ['@bank/ui'] },
 });

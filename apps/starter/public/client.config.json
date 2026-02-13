@@ -7,20 +7,22 @@
   "themeKey": "default",
   "modules": {
     "dashboard": { "enabled": true },
-    "accounts": { "enabled": true },
-    "transactions": { "enabled": true },
-  "approvals": { "enabled": true },
-  "users-roles": { "enabled": true },
-  "reports": { "enabled": true },
-  "audit": { "enabled": true }
+    "accounts": { "enabled": true, "exportEnabled": true },
+    "transactions": { "enabled": true, "exportEnabled": true },
+    "approvals": { "enabled": true },
+    "users-roles": { "enabled": true, "exportEnabled": true },
+    "reports": { "enabled": true },
+    "audit": { "enabled": true, "exportEnabled": true }
   },
-  "api": {
-    "baseUrl": "https://api.mabanque.com",
-    "timeout": 8000
-  },
+  "api": { "baseUrl": "https://api.mabanque.com", "timeout": 8000 },
   "auth": {
     "type": "oidc",
     "issuer": "https://auth.mabanque.com",
-    "clientId": "backoffice-app"
+    "clientId": "backoffice-app",
+    "mode": "demo"
+  },
+  "session": {
+    "idleTimeoutMinutes": 15,
+    "warningBeforeLogoutSeconds": 60
   }
 }

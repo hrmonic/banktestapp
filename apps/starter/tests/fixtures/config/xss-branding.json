@@ -1,0 +1,13 @@
+{
+  "branding": {
+    "name": "<strong>Demo</strong><script>alert('xss')</script>",
+    "logo": "</script><script>alert('xss-logo')</script>",
+    "primaryColor": "#4e0aaf"
+  },
+  "api": {
+    "baseUrl": "https://api.example.com"
+  },
+  "modules": {
+    "dashboard": { "enabled": true }
+  }
+}

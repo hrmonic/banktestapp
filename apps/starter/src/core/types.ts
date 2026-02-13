@@ -1,6 +1,6 @@
-// Core shared types for the starter app.
-// These types are consumed from JavaScript via JSDoc (import("./core/types").Type)
-// so they do not impact runtime, only type-checking and DX.
+// Types cœur partagés pour l'application starter.
+import type { Permission } from './constants';
+import type { ComponentType } from 'react';
 
 export interface BankModuleSidebarItem {
   /**
@@ -42,9 +42,8 @@ export interface BankModule {
   basePath: string;
   /**
    * Composant React qui déclare les <Routes> internes du module.
-   * Typé de manière générique pour ne pas dépendre des types React.
    */
-  routes: () => unknown;
+  routes: ComponentType;
   /**
    * Éléments de navigation latérale dérivés de ce module.
    */
@@ -52,7 +51,7 @@ export interface BankModule {
   /**
    * Permissions/roles nécessaires pour accéder au module.
    */
-  permissionsRequired?: string[];
+  permissionsRequired?: Permission[];
   /**
    * Flags pour activer/désactiver des sous-fonctionnalités.
    */
@@ -63,5 +62,4 @@ export interface BankModule {
   apiAdapter?: Record<string, unknown>;
 }
 
-export type BankModuleId = BankModule["id"];
-
+export type BankModuleId = BankModule['id'];
