@@ -1,4 +1,0 @@
-{
-  "buildCommand": "pnpm install && pnpm build",
-  "outputDirectory": "apps/starter/dist"
-}

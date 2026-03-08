@@ -1,4 +1,3 @@
-# CI: build, lint, unit/integration tests. Badge in README.
 name: CI
 
 on:
@@ -8,21 +7,22 @@ on:
     branches: [main]
 
 jobs:
-  ci:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
-          cache: "pnpm"
+          node-version: '20.x'
 
-      - name: Install pnpm
+      - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 9
+          run_install: false
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -30,11 +30,21 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-      - name: Build
-        run: pnpm build
+      - name: Format check
+        run: pnpm format:check
 
-      - name: Unit & integration tests
-        run: pnpm test --run
+      - name: Unit and integration tests
+        run: pnpm exec vitest run
 
       - name: Security tests
         run: pnpm test:security
+
+      - name: Audit dependencies (fail on high/critical)
+        run: pnpm audit --audit-level=high
+
+      - name: E2E tests
+        env:
+          CI: 'true'
+        run: |
+          npx playwright install --with-deps
+          pnpm test:e2e

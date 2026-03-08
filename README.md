@@ -6,8 +6,6 @@
 
 > UI/UX only – aucune logique métier ou persistance côté repo, tout passe par vos APIs.
 
-[![CI](https://github.com/hrmonic/banktestapp/actions/workflows/ci.yml/badge.svg)](https://github.com/hrmonic/banktestapp/actions/workflows/ci.yml)
-[![Live demo](https://img.shields.io/badge/demo-Voir%20la%20d%C3%A9mo-green?style=for-the-badge)](https://banktestapp-demo.vercel.app)
 [![Node.js](https://img.shields.io/badge/node-%E2%89%A518.0.0-brightgreen?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![React](https://img.shields.io/badge/react-18.x-blue?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-100%25-blue?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -16,31 +14,6 @@
 [🔧 Démarrage rapide](#-démarrage-rapide) • [🏗 Architecture](#-architecture-du-projet) • [🛡 Sécurité](#-sécurité) • [🧪 Tests & qualité](#-tests--qualité) • [📚 Documentation](#-documentation)
 
 </div>
-
----
-
-## Aperçu produit
-
-Captures des écrans clés (dashboard, liste). Ajoutez vos captures dans `docs/screenshots/` et décommentez les lignes ci‑dessous.
-
-<!--
-![Dashboard](docs/screenshots/dashboard.png)
-![Liste](docs/screenshots/list.png)
--->
-
-*Après déploiement de la démo : [Voir la démo live](https://banktestapp-demo.vercel.app) (mettre à jour l’URL dans le README après déploiement sur Vercel/Netlify).*
-
----
-
-## Pour les recruteurs (en 20 secondes)
-
-Ce que vous voyez tout de suite :
-
-- **CI verte** : [Actions](https://github.com/hrmonic/banktestapp/actions) (build + lint + tests unitaires + tests sécurité).
-- **Démo live** : [Voir la démo](https://banktestapp-demo.vercel.app) (à configurer une fois déployée ; voir [docs/deploy-demo.md](docs/deploy-demo.md)).
-- **Monorepo front** : `apps/starter` (app de démo) + `packages/ui` (@bank/ui), config validée (Zod), RBAC.
-- **Tests** : `pnpm test` (Vitest), `pnpm test:e2e` (Playwright), `pnpm test:security` (RBAC, sanitize, adversarial).
-- **Doc** : architecture, sécurité, contrats API, a11y dans `docs/` et `docs/en/` / `docs/fr/`.
 
 ---
 
@@ -245,7 +218,6 @@ Build production : `pnpm build`. Servir le dossier `apps/starter/dist/` derrièr
 | Document                                 | Description                                                                                                                                                 |
 | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **`docs/architecture.md`**               | Architecture détaillée : structure, flux, BankModule, config, sécurité (résumé), tests.                                                                     |
-| **`docs/deploy-demo.md`**                | Déploiement de la démo (Vercel, Netlify, GitHub Pages) et mise à jour de l’URL dans le README.                                                              |
 | **`docs/security-hardening.md`**         | En-têtes HTTP (CSP, HSTS, etc.), intégration gateway, tokens/session, durcissement de la config.                                                            |
 | **`docs/security-incident-playbook.md`** | Actions en cas d’incident (PII dans les logs, désactivation de module, erreurs critiques, post-mortem).                                                     |
 | **`docs/api-contracts.md`**              | Contrats des endpoints attendus (accounts, dashboard, transactions, approvals, users-roles, audit, reports).                                                |
