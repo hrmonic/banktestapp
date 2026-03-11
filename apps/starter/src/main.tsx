@@ -5,7 +5,7 @@
 import './lib/i18n';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { ConfigProvider } from '@/lib/config/ConfigContext';
 import { ConfigGate } from '@/lib/config/ConfigGate';
 import './index.css';
@@ -21,10 +21,10 @@ ReactDOM.createRoot(root).render(
     >
       Aller au contenu principal
     </a>
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
+    <HashRouter>
       <ConfigProvider>
         <ConfigGate />
       </ConfigProvider>
-    </BrowserRouter>
+    </HashRouter>
   </React.StrictMode>
 );
