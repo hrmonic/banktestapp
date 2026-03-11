@@ -17,12 +17,21 @@ import App from '../../App';
 export function ConfigGate(): React.ReactElement {
   const { config, isLoading, error } = useConfigContext();
 
-  if (isLoading || !config) {
+  if (isLoading) {
     return <LoadingFallback />;
   }
 
   if (error) {
     return <InvalidConfigPage error={error} />;
+  }
+
+  if (!config) {
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold mb-4">Erreur de configuration</h1>
+        <p>La configuration client n&apos;a pas pu être chargée.</p>
+      </div>
+    );
   }
 
   return (

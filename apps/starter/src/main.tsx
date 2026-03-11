@@ -21,7 +21,7 @@ ReactDOM.createRoot(root).render(
     >
       Aller au contenu principal
     </a>
-    <BrowserRouter basename="/banktestapp">
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <ConfigProvider>
         <ConfigGate />
       </ConfigProvider>

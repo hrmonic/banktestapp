@@ -34,7 +34,8 @@ export function ConfigProvider({
     if (initialConfig !== undefined) return;
     async function fetchConfig() {
       try {
-        const res = await fetch('./client.config.json');
+        // Chemin relatif pour fonctionner en dev (`/login`) comme sur GitHub Pages (`/banktestapp/login`)
+        const res = await fetch('client.config.json');
         if (!res.ok)
           throw new Error('Erreur lors du chargement de la configuration');
         const data = await res.json();

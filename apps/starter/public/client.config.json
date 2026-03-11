@@ -14,13 +14,7 @@
     "reports": { "enabled": true },
     "audit": { "enabled": true, "exportEnabled": true }
   },
-  "api": { "baseUrl": "https://api.mabanque.com", "timeout": 8000 },
-  "auth": {
-    "type": "oidc",
-    "issuer": "https://auth.mabanque.com",
-    "clientId": "backoffice-app",
-    "mode": "demo"
-  },
+  "api": { "baseUrl": "https://api.example.com", "timeout": 8000 },
   "session": {
     "idleTimeoutMinutes": 15,
     "warningBeforeLogoutSeconds": 60
