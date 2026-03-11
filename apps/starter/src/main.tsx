@@ -21,7 +21,7 @@ ReactDOM.createRoot(root).render(
     >
       Aller au contenu principal
     </a>
-    <BrowserRouter>
+    <BrowserRouter basename="/banktestapp">
       <ConfigProvider>
         <ConfigGate />
       </ConfigProvider>
