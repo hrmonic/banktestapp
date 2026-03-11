@@ -40,6 +40,10 @@ jobs:
       - name: Build demo for GitHub Pages
         run: pnpm build
 
+      - name: Fix asset paths for GitHub Pages
+        run: |
+          sed -i "s#src=\"/assets/#src=\"/banktestapp/assets/#g; s#href=\"/assets/#href=\"/banktestapp/assets/#g" apps/starter/dist/index.html
+
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
