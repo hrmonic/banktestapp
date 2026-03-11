@@ -5,13 +5,16 @@
 import './lib/i18n';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { HashRouter } from 'react-router-dom';
+import { BrowserRouter, HashRouter } from 'react-router-dom';
 import { ConfigProvider } from '@/lib/config/ConfigContext';
 import { ConfigGate } from '@/lib/config/ConfigGate';
 import './index.css';
 
 const root = document.getElementById('root');
 if (!root) throw new Error('Root element #root not found');
+
+const Router =
+  import.meta.env.MODE === 'production' ? HashRouter : BrowserRouter;
 
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
@@ -21,10 +24,10 @@ ReactDOM.createRoot(root).render(
     >
       Aller au contenu principal
     </a>
-    <HashRouter>
+    <Router>
       <ConfigProvider>
         <ConfigGate />
       </ConfigProvider>
-    </HashRouter>
+    </Router>
   </React.StrictMode>
 );
