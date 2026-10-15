@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@config '../../../tailwind.config.js';
+@source '../../../packages/ui/src';
 
 /* ========== Variables thème sombre (type Cursor) ========== */
 :root.dark {
