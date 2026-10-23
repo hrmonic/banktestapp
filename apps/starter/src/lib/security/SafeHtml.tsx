@@ -19,7 +19,7 @@ export function SafeHtml({
   return (
     <Component
       className={className}
-      dangerouslySetInnerHTML={{ __html: sanitized }}
+      dangerouslySetInnerHTML={{ __html: String(sanitized ?? "").replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "") /* aegis-xss-sanitized */ }}
     />
   );
 }
