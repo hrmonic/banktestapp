@@ -66,7 +66,7 @@ export function OidcAuthProvider({
     });
     managerRef.current = manager;
 
-    manager.getUser().then((oidcUser) => {
+    manager.getUser().then((oidcUser) => { /* Ajouter .catch((err) => console.error(err)) */
       if (oidcUser && !oidcUser.expired) {
         setUser(
           oidcUserToAuthUser(oidcUser.profile as Record<string, unknown>)
