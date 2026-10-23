@@ -66,7 +66,7 @@ test('RBAC: profil inconnu en localStorage redirige vers Unauthorized', async ({
 // Scénarios d'abus de configuration : injecter un client.config.json malveillant/invalide
 // et vérifier que l'application réagit proprement avec une UI d'erreur contrôlée.
 // Skip: en CI/dev l'interception de client.config.json ne s'applique pas toujours (page reste sur "Chargement…").
-test.skip('Config: client.config.json invalide affiche une page de configuration invalide', async ({
+test('Config: client.config.json invalide affiche une page de configuration invalide', async ({
   page,
 }) => {
   await withClientConfig(page, invalidConfigBaseUrlNotUrl);
